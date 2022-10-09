@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
@@ -28,7 +28,7 @@ const App = () => {
     profilePicURL: "",
   });
 
-  useEffect(() => {}, []); //Insert Auth related code here.
+  // useEffect(() => {}, []); //Insert Auth related code here.
 
   return (
     <div>
