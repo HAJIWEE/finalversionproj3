@@ -1,5 +1,7 @@
 import * as React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { BACKEND_URL } from "../constants";
+import axios from "axios";
+import { Outlet, Link } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import FeedIcon from "@mui/icons-material/Feed";
@@ -13,6 +15,21 @@ export function Nav() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    const timenow = new Date().toLocaleDateString();
+    var value = newValue.toString();
+    console.log(timenow);
+    console.log(value);
+    axios
+      .post(`${BACKEND_URL}/navhistory`, {
+        timenow,
+        value,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((res) => {
+        console.log(res);
+      });
   };
 
   return (
@@ -30,13 +47,11 @@ export function Nav() {
         value={value}
         onChange={handleChange}
       >
-        <Link to="/newsfeed">
-          <BottomNavigationAction
-            label="NewsFeed"
-            value="NewsFeed"
-            icon={<FeedIcon />}
-          />
-        </Link>
+        <BottomNavigationAction
+          label="NewsFeed"
+          value="NewsFeed"
+          icon={<FeedIcon />}
+        />
         <Link to="/search">
           <BottomNavigationAction
             label="Search"
