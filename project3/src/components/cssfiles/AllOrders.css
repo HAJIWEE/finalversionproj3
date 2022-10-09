@@ -1,0 +1,39 @@
+.allOrdersTitle {
+  margin-left: 5%;
+  text-align: left;
+  width: 288px;
+  height: 19px;
+  font-family: "Noto Serif JP";
+  font-style: italic;
+  font-stretch: expanded;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 120%;
+  color: #2ff522;
+  flex: none;
+  order: 1;
+  flex-grow: 1;
+}
+
+.allOrdersTabContainer {
+  flex-flow: row;
+  align-items: center;
+  width: auto;
+  height: 30px;
+  margin: 5%;
+}
+
+.allOrdersTabBox {
+  background: #2ff522;
+  width: 120px;
+  height: 40px;
+  font-family: "Noto Serif JP";
+  font-style: italic;
+  font-weight: 1000;
+  font-size: 20px;
+  border-color: aliceblue;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 3px;
+  margin: 3%;
+}
