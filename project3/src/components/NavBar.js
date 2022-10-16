@@ -1,7 +1,8 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { BACKEND_URL } from "../constants";
 import axios from "axios";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, Navigate } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import FeedIcon from "@mui/icons-material/Feed";
@@ -9,21 +10,34 @@ import SearchIcon from "@mui/icons-material/Search";
 import UploadIcon from "@mui/icons-material/Upload";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useAuth0 } from "@auth0/auth0-react";
 
-export function Nav() {
-  const [value, setValue] = React.useState("recents");
+export function Nav(props) {
+  const [value, setValue] = useState("recents");
+  const { loginWithRedirect } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
 
-  const handleChange = (event, newValue) => {
+  const handleChange = async (event, newValue) => {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
     setValue(newValue);
     const timenow = new Date().toLocaleDateString();
     var value = newValue.toString();
-    console.log(timenow);
-    console.log(value);
-    axios
-      .post(`${BACKEND_URL}/navhistory`, {
-        timenow,
-        value,
-      })
+    const postResult = await axios
+      .post(
+        `${BACKEND_URL}/navhistory`,
+        {
+          timenow,
+          value,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       .then((res) => {
         console.log(res);
       })
@@ -37,7 +51,7 @@ export function Nav() {
       <Outlet />
       <BottomNavigation
         sx={{
-          width: 375,
+          width: "100%",
           position: "fixed",
           bottom: 0,
           background: "lightgray",
@@ -48,38 +62,50 @@ export function Nav() {
         onChange={handleChange}
       >
         <BottomNavigationAction
+          component={Link}
+          to="/newsfeed"
           label="NewsFeed"
           value="NewsFeed"
           icon={<FeedIcon />}
         />
-        <Link to="/search">
+        <BottomNavigationAction
+          component={Link}
+          to="/search"
+          label="Search"
+          value="Search"
+          icon={<SearchIcon />}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/upload"
+          label="Upload"
+          value="Upload"
+          icon={<UploadIcon />}
+        />
+        <BottomNavigationAction
+          component={Link}
+          to="/cart"
+          label="Cart"
+          value="Cart"
+          icon={<ShoppingCartIcon />}
+        />
+        {user !== undefined ? (
           <BottomNavigationAction
-            label="Search"
-            value="Search"
-            icon={<SearchIcon />}
-          />
-        </Link>
-        <Link to="/upload">
-          <BottomNavigationAction
-            label="Upload"
-            value="Upload"
-            icon={<UploadIcon />}
-          />
-        </Link>
-        <Link to="/cart">
-          <BottomNavigationAction
-            label="Cart"
-            value="Cart"
-            icon={<ShoppingCartIcon />}
-          />
-        </Link>
-        <Link to="/profile">
-          <BottomNavigationAction
+            component={Link}
+            to="/profile"
             label="Profile"
             value="Profile"
             icon={<AccountCircleIcon />}
           />
-        </Link>
+        ) : (
+          <BottomNavigationAction
+            label="Login"
+            value="Login"
+            showLabel={true}
+            onClick={() => loginWithRedirect()}
+            icon={<AccountCircleIcon />}
+          />
+        )}
       </BottomNavigation>
     </>
   );

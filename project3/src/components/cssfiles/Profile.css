@@ -7,6 +7,10 @@ body {
   margin: 0%;
 }
 
+.svg_icons {
+  transform: scale(8);
+}
+
 .profilepage {
   /* Profile */
 
@@ -152,12 +156,12 @@ body {
 }
 
 .LogoutBtn {
+  display: flex;
   margin-top: 10px;
   padding-inline-start: 0%;
-  font-family: "Noto Serif JP";
-  font-style: normal;
-  font-stretch: expanded;
-  text-decoration: underline;
-  font-size: 30px;
-  color: red;
+}
+
+.FaceIconProfilePic {
+  height: 300;
+  width: 300;
 }
