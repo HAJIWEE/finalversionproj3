@@ -1,8 +1,8 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { BACKEND_URL } from "../constants";
 import axios from "axios";
-import { Outlet, Link, Navigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import FeedIcon from "@mui/icons-material/Feed";
@@ -102,7 +102,11 @@ export function Nav(props) {
             label="Login"
             value="Login"
             showLabel={true}
-            onClick={() => loginWithRedirect()}
+            onClick={() =>
+              loginWithRedirect({
+                redirectUri: "http://localhost:3000/createaccount",
+              })
+            }
             icon={<AccountCircleIcon />}
           />
         )}

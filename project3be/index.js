@@ -1,6 +1,9 @@
 const cors = require("cors");
 const express = require("express");
 const { auth } = require("express-oauth2-jwt-bearer");
+const generateUploadURL = require("./ImageStorage");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 require("dotenv").config();
 
 const config = {
@@ -27,6 +30,7 @@ const navhistoryController = require("./controllers/navhistoryController");
 
 // importing DB
 const db = require("./db/models/index");
+const { literal } = require("sequelize");
 const { navhists } = db;
 
 // initializing Controllers -> note the lowercase for the first word
@@ -46,6 +50,21 @@ app.use(express.json());
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use("/navhistory", navhistoryRouter);
+
+app.get("/uploadimage", async (req, res) => {
+  const Iurl = await generateUploadURL();
+  const uploadTask = await fetch(Iurl, {
+    method: "PUT",
+    headers: { "Content-Type": "multipart/form-data" },
+    body: req.body,
+  });
+
+  const url = Iurl.split("?")[0];
+  console.log(req.body);
+  console.log(url);
+  console.log(uploadTask);
+  res.send({ url });
+});
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
