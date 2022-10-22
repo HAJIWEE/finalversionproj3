@@ -2,23 +2,42 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import EmailIcon from "@mui/icons-material/Email";
 import Button from "@mui/material/Button";
-import axios from "axios";
 import { BACKEND_URL } from "../constants";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./cssfiles/login.css";
+import axios from "axios";
 
 const Create = (props) => {
-  const { user, getAccessTokenSilently } = useAuth0();
+  //const { user, getAccessTokenSilently } = useAuth0();
   const [file, setfile] = useState(null);
 
   async function handleSubmit() {
-    console.log(file[0]);
+    console.log(file);
     const formData = new FormData();
-    formData.append("UploadFile", file);
-    const imageurl = await axios.get(`${BACKEND_URL}/uploadimage`, formData);
-    const { data } = imageurl;
-    const { url } = data;
-    console.log(url);
+    formData.append("file", file[0]);
+
+    var config = {
+      method: "post",
+      url: "http://localhost:4000",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        ...formData.getHeaders(),
+      },
+      data: formData,
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    // const imageurl = await axios.post(`${BACKEND_URL}/uploadimage`, formData);
+    // const { data } = imageurl;
+    // const { url } = data;
+    console.log(formData);
     // const uploadTask = await fetch(Iurl, {
     //   method: "PUT",
     //   headers: { "Content-Type": "multipart/form-data" },
@@ -29,8 +48,16 @@ const Create = (props) => {
   const handleInput = (event) => {};
 
   const onFileUpload = (event) => {
-    setfile(event.target.files);
+    const fileReader = new FileReader();
+    const name = event.accept.includes("image") ? "images" : "videos";
+
+    fileReader.readAsDataURL(event.files[0]);
+    fileReader.onload = (e) => {
+      setfile(e.target.result);
+    };
+    // setfile(event.target.files);
   };
+
   return (
     <div>
       <h1 style={{ top: 100 }}>Create Account</h1>
