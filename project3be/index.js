@@ -1,12 +1,19 @@
 const cors = require("cors");
+const { S3Client } = require("@aws-sdk/client-s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const express = require("express");
 const { auth } = require("express-oauth2-jwt-bearer");
-const generateUploadURL = require("./ImageStorage");
 const multer = require("multer");
 const upload = multer();
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-require("dotenv").config();
+// importing Routers
+const navHistoryRouter = require("./routers/navhistoryRouter");
+const imageRouter = require("./routers/imageRouter.js");
+// importing Controllers
+const navhistoryController = require("./controllers/navhistoryController");
+// importing DB
+const db = require("./db/models/index");
+const { literal } = require("sequelize");
+const { navhists } = db;
 
 const config = {
   authRequired: false,
@@ -24,22 +31,12 @@ const checkJwt = auth({
   issuerBaseURL: `https://dev-oa1xn--2.us.auth0.com/`,
 });
 
-// importing Routers
-const navHistoryRouter = require("./routers/navhistoryRouter");
-
-// importing Controllers
-const navhistoryController = require("./controllers/navhistoryController");
-
-// importing DB
-const db = require("./db/models/index");
-const { literal } = require("sequelize");
-const { navhists } = db;
-
 // initializing Controllers -> note the lowercase for the first word
 const navHistoryCon = new navhistoryController(navhists);
 
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
+const ImageRouter = new imageRouter(checkJwt).routes();
 
 const PORT = 4000;
 const app = express();
@@ -53,20 +50,7 @@ app.use(express.json());
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use("/navhistory", navhistoryRouter);
 
-app.post("/uploadimage", upload.single("file"), async (req, res) => {
-  // const Iurl = await generateUploadURL();
-  // const uploadTask = await fetch(Iurl, {
-  //   method: "PUT",
-  //   headers: { "Content-Type": "multipart/form-data" },
-  //   body: req.file,
-  // });
-
-  // const url = Iurl.split("?")[0];
-  console.log(req.file);
-  // console.log(url);
-  // console.log(uploadTask);
-  res.send({ hi: "this" });
-});
+app.use("/uploadimage", ImageRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

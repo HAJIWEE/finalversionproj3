@@ -8,63 +8,36 @@ import "./cssfiles/login.css";
 import axios from "axios";
 
 const Create = (props) => {
-  //const { user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [file, setfile] = useState(null);
 
   async function handleSubmit() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
     console.log(file);
     const formData = new FormData();
     formData.append("file", file[0]);
-
-    var config = {
-      method: "post",
-      url: "http://localhost:4000",
+    const imageurl = await axios.post(`${BACKEND_URL}/uploadimage`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
-        ...formData.getHeaders(),
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: formData,
-    };
-
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    // const imageurl = await axios.post(`${BACKEND_URL}/uploadimage`, formData);
-    // const { data } = imageurl;
-    // const { url } = data;
-    console.log(formData);
-    // const uploadTask = await fetch(Iurl, {
-    //   method: "PUT",
-    //   headers: { "Content-Type": "multipart/form-data" },
-    //   body: file[0],
-    // });
+    });
+    const { data } = imageurl;
+    const { url } = data;
+    console.log(url);
   }
 
   const handleInput = (event) => {};
 
   const onFileUpload = (event) => {
-    const fileReader = new FileReader();
-    const name = event.accept.includes("image") ? "images" : "videos";
-
-    fileReader.readAsDataURL(event.files[0]);
-    fileReader.onload = (e) => {
-      setfile(e.target.result);
-    };
-    // setfile(event.target.files);
+    setfile(event.target.files);
   };
 
   return (
     <div>
       <h1 style={{ top: 100 }}>Create Account</h1>
-      <h3>Already have an account?</h3>
-      <Link to="/Login">
-        <h5>Sign in</h5>
-      </Link>
       <div className="userAuthBox">
         <ul className="AuthDetailsHolder">
           <li>
@@ -86,15 +59,14 @@ const Create = (props) => {
       </div>
       <div className="passwordAuthBox">
         <Button variant="contained" component="label">
-          Upload Display Picture
           <input
             name="fileUpload"
             hidden
             accept="image/*"
-            multiple
             type="file"
             onChange={onFileUpload}
           />
+          Upload Display Picture
         </Button>
       </div>
       <div className="passwordAuthBox" style={{ marginTop: 100 }}>
