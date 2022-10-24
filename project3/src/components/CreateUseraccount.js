@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Component, useState } from "react";
+import { Navigate } from "react-router-dom";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import EmailIcon from "@mui/icons-material/Email";
 import Button from "@mui/material/Button";
 import { BACKEND_URL } from "../constants";
@@ -9,80 +14,162 @@ import axios from "axios";
 
 const Create = (props) => {
   const { user, getAccessTokenSilently } = useAuth0();
+  const [username, setUsername] = useState("");
   const [file, setfile] = useState(null);
+  const [imageUrl, setURL] = useState("");
+  const [UUID, setUUID] = useState("");
+  const [Role, setRole] = useState("");
+  const [userExists, setUserExisting] = useState(undefined);
+
+  async function checkExistingUser() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    if (user !== undefined) {
+      setUUID(user.email);
+    }
+    console.log("THIS IS" + UUID);
+    if (UUID !== "" && UUID !== undefined) {
+      await axios
+        .get(`${BACKEND_URL}/User/${UUID}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then(() => {
+          setUserExisting(true);
+        })
+        .catch((err) => {
+          setUserExisting(false);
+        });
+    }
+  }
 
   async function handleSubmit() {
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
     });
-    console.log(file);
-    const formData = new FormData();
-    formData.append("file", file[0]);
-    const imageurl = await axios.post(`${BACKEND_URL}/uploadimage`, formData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const { data } = imageurl;
-    const { url } = data;
-    console.log(url);
+    if (file != null) {
+      const formData = new FormData();
+      formData.append("file", file[0]);
+      await axios
+        .post(`${BACKEND_URL}/uploadimage`, formData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((res) => {
+          const { data } = res;
+          const { url } = data;
+          setURL(url);
+        });
+    }
+
+    await axios
+      .post(
+        `${BACKEND_URL}/User`,
+        { username, imageUrl, UUID, Role },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then(() => {
+        setUserExisting(true);
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
   }
 
-  const handleInput = (event) => {};
+  const handleInput = (event) => {
+    setUsername(event.target.value);
+  };
 
   const onFileUpload = (event) => {
     setfile(event.target.files);
   };
 
-  return (
-    <div>
-      <h1 style={{ top: 100 }}>Create Account</h1>
-      <div className="userAuthBox">
-        <ul className="AuthDetailsHolder">
-          <li>
-            <EmailIcon sx={{ fontSize: 50 }} />
-          </li>
-          <li>
-            <form className="userform">
-              <label className="label2">Username :</label>
-              <input
-                title="Enter Username here"
-                className="input"
-                type="text"
-                id="username"
-                onChange={handleInput}
+  if (userExists === undefined) {
+    checkExistingUser();
+    return <div>Loading ...</div>;
+  } else if (userExists === true) {
+    return <Navigate to="/newsfeed" />;
+  } else if (userExists === false) {
+    return (
+      <div>
+        <h1>Create Account</h1>
+        <div className="userAuthBox">
+          <ul className="AuthDetailsHolder">
+            <li>
+              <EmailIcon sx={{ fontSize: 50 }} />
+            </li>
+            <li>
+              <form className="userform">
+                <label className="label2">Enter Username :</label>
+                <input
+                  title="Enter Username here"
+                  className="input"
+                  type="text"
+                  id="username"
+                  onChange={handleInput}
+                />
+              </form>
+            </li>
+          </ul>
+        </div>
+        <div className="passwordAuthBox">
+          <Button variant="contained" component="label">
+            <input
+              name="fileUpload"
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={onFileUpload}
+            />
+            Upload Display Picture
+          </Button>
+        </div>
+        <div className="Role">
+          <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Role</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="Buy Only"
+              name="radio-buttons-group"
+              onChange={(event, newValue) => setRole(newValue)}
+            >
+              <FormControlLabel
+                value="false"
+                control={<Radio />}
+                label="I'm Buying Only"
               />
-            </form>
-          </li>
-        </ul>
+              <FormControlLabel
+                value="true"
+                control={<Radio />}
+                label="I'm Selling, Gimme that Money"
+              />
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div className="FormSubmit">
+          <Button
+            variant="contained"
+            component="label"
+            onClick={handleSubmit}
+            color="success"
+          >
+            Submit Form
+          </Button>
+        </div>
       </div>
-      <div className="passwordAuthBox">
-        <Button variant="contained" component="label">
-          <input
-            name="fileUpload"
-            hidden
-            accept="image/*"
-            type="file"
-            onChange={onFileUpload}
-          />
-          Upload Display Picture
-        </Button>
-      </div>
-      <div className="passwordAuthBox" style={{ marginTop: 100 }}>
-        <Button
-          variant="contained"
-          component="label"
-          onClick={handleSubmit}
-          color="success"
-        >
-          Submit Form
-        </Button>
-      </div>
-    </div>
-  );
+    );
+  }
 };
-
 export { Create };
 
 // import React, { useState } from "react";

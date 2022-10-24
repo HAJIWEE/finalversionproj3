@@ -25,7 +25,7 @@ export function Nav(props) {
     setValue(newValue);
     const timenow = new Date().toLocaleDateString();
     var value = newValue.toString();
-    const postResult = await axios
+    await axios
       .post(
         `${BACKEND_URL}/navhistory`,
         {

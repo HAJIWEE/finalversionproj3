@@ -1,19 +1,17 @@
 const cors = require("cors");
-const { S3Client } = require("@aws-sdk/client-s3");
-const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const express = require("express");
 const { auth } = require("express-oauth2-jwt-bearer");
-const multer = require("multer");
-const upload = multer();
 // importing Routers
 const navHistoryRouter = require("./routers/navhistoryRouter");
 const imageRouter = require("./routers/imageRouter.js");
+const userRouter = require("./routers/userRouter.js");
 // importing Controllers
+const userController = require("./controllers/userController");
 const navhistoryController = require("./controllers/navhistoryController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhists } = db;
+const { navhist, Users } = db;
 
 const config = {
   authRequired: false,
@@ -32,12 +30,12 @@ const checkJwt = auth({
 });
 
 // initializing Controllers -> note the lowercase for the first word
-const navHistoryCon = new navhistoryController(navhists);
-
+const navHistoryCon = new navhistoryController(navhist);
+const userCon = new userController(Users);
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
-
+const UserRouter = new userRouter(userCon, checkJwt).routes();
 const PORT = 4000;
 const app = express();
 
@@ -51,6 +49,8 @@ app.use(express.json());
 app.use("/navhistory", navhistoryRouter);
 
 app.use("/uploadimage", ImageRouter);
+
+app.use("/User", UserRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
