@@ -37,16 +37,21 @@ const Create = (props) => {
             Authorization: `Bearer ${accessToken}`,
           },
         })
-        .then(() => {
-          setUserExisting(true);
+        .then((res) => {
+          const { data } = res;
+          const { dpurl } = data;
+          console.log(dpurl);
+          if (data !== null) {
+            setUserExisting(true);
+          } else {
+            setUserExisting(false);
+          }
         })
-        .catch((err) => {
-          setUserExisting(false);
-        });
+        .catch((err) => {});
     }
   }
-
-  async function handleSubmit() {
+  async function handleRole(event, newValue) {
+    setRole(newValue);
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
@@ -54,18 +59,25 @@ const Create = (props) => {
     if (file != null) {
       const formData = new FormData();
       formData.append("file", file[0]);
-      await axios
-        .post(`${BACKEND_URL}/uploadimage`, formData, {
+      const { data } = await axios.post(
+        `${BACKEND_URL}/uploadimage`,
+        formData,
+        {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        })
-        .then((res) => {
-          const { data } = res;
-          const { url } = data;
-          setURL(url);
-        });
+        }
+      );
+      const { url } = data;
+      console.log(url);
+      return setURL(url);
     }
+  }
+  async function handleSubmit() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
 
     await axios
       .post(
@@ -78,19 +90,19 @@ const Create = (props) => {
         }
       )
       .then(() => {
+        console.log(imageUrl);
         setUserExisting(true);
       })
       .catch((err) => {
         window.alert(err);
       });
   }
+  async function onFileUpload(event) {
+    setfile(event.target.files);
+  }
 
   const handleInput = (event) => {
     setUsername(event.target.value);
-  };
-
-  const onFileUpload = (event) => {
-    setfile(event.target.files);
   };
 
   if (userExists === undefined) {
@@ -141,7 +153,7 @@ const Create = (props) => {
               aria-labelledby="demo-radio-buttons-group-label"
               defaultValue="Buy Only"
               name="radio-buttons-group"
-              onChange={(event, newValue) => setRole(newValue)}
+              onChange={handleRole}
             >
               <FormControlLabel
                 value="false"

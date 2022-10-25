@@ -8,7 +8,9 @@ class userController extends BaseController {
 
   // Create user
   async insertOne(req, res) {
-    const { username, imageUrl, UUID, Role } = req.params;
+    const { username, imageUrl, UUID, Role } = req.body;
+    console.log(imageUrl);
+    console.log(username);
     try {
       // Create new user
       const newUser = await this.model.create({
@@ -32,7 +34,7 @@ class userController extends BaseController {
       const CurrUser = await this.model.findOne({
         where: { user_id: UUID },
       });
-      // Respond with new sighting
+      console.log(CurrUser);
       return res.json(CurrUser);
     } catch (err) {
       console.log(err);
