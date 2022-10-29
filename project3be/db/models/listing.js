@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       itemPrice: DataTypes.DOUBLE,
       itemDescription: DataTypes.STRING,
       itemSalesStatus: DataTypes.STRING,
-      sellerUserID: DataTypes.UUID,
+      sellerUserID: DataTypes.STRING,
     },
     {
       sequelize,

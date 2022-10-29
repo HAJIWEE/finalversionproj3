@@ -6,14 +6,16 @@ const navHistoryRouter = require("./routers/navhistoryRouter");
 const imageRouter = require("./routers/imageRouter.js");
 const userRouter = require("./routers/userRouter.js");
 const listingRouter = require("./routers/listingRouter");
+const paymentRouter = require("./routers/paymentRouter");
 // importing Controllers
 const userController = require("./controllers/userController");
 const navhistoryController = require("./controllers/navhistoryController");
 const listingController = require("./controllers/listingController");
+const paymentCon = require("./controllers/paymentController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhist, Users, listings, itemsforsale } = db;
+const { navhist, Users, listings, itemsforsale, payment } = db;
 
 const config = {
   authRequired: false,
@@ -35,13 +37,13 @@ const checkJwt = auth({
 const navHistoryCon = new navhistoryController(navhist);
 const userCon = new userController(Users);
 const listingCon = new listingController(listings);
-
+const PaymentCon = new paymentCon(payment);
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon).routes();
 const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
-const PaymentRouter = new paymentRouter(paymentCon, checkJwt).routes();
+const PaymentRouter = new paymentRouter(PaymentCon, checkJwt).routes();
 
 const PORT = 4000;
 const app = express();
