@@ -41,6 +41,7 @@ const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon).routes();
 const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
+const PaymentRouter = new paymentRouter(paymentCon, checkJwt).routes();
 
 const PORT = 4000;
 const app = express();
@@ -57,6 +58,8 @@ app.use("/navhistory", navhistoryRouter);
 app.use("/uploadimage", ImageRouter);
 
 app.use("/User", UserRouter);
+
+app.use("/payment", PaymentRouter);
 
 app.use("/list", ListingRouter);
 
