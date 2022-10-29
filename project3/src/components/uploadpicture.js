@@ -1,128 +1,148 @@
-import React from "react";
-// import { Outlet, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import EmailIcon from "@mui/icons-material/Email";
+import Button from "@mui/material/Button";
+import { BACKEND_URL } from "../constants";
+import { useAuth0 } from "@auth0/auth0-react";
+import "./cssfiles/login.css";
+import axios from "axios";
 
-const UploadPicture = () => {
-  return <div>this is the UploadPicture page</div>;
+const UploadPicture = (props) => {
+  const { user, getAccessTokenSilently } = useAuth0();
+  const [username, setUsername] = useState("");
+  const [file, setfile] = useState(null);
+  const [imageUrl, setURL] = useState("");
+  const [Role, setRole] = useState("");
+
+  async function handleRole(event, newValue) {
+    setRole(newValue);
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    if (file != null) {
+      const formData = new FormData();
+      formData.append("file", file[0]);
+      const { data } = await axios.post(
+        `${BACKEND_URL}/uploadimage`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const { url } = data;
+
+      return setURL(url);
+    }
+  }
+  const handleSubmit = async () => {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+
+    await axios
+      .put(
+        `${BACKEND_URL}/User/update/${user.email}`,
+        { username, imageUrl, Role },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then(() => {
+        console.log(imageUrl);
+        Navigate({ to: "/profile", replace: true });
+      })
+      .catch((err) => {
+        window.alert(err);
+      });
+  };
+  async function onFileUpload(event) {
+    setfile(event.target.files);
+  }
+
+  const handleInput = (event) => {
+    setUsername(event.target.value);
+  };
+
+  return (
+    <div>
+      <h1>Update Account</h1>
+      <div className="userAuthBox">
+        <ul className="AuthDetailsHolder">
+          <li>
+            <EmailIcon sx={{ fontSize: 50 }} />
+          </li>
+          <li>
+            <form className="userform">
+              <label className="label2">Enter Username :</label>
+              <input
+                title="Enter Username here"
+                className="input"
+                type="text"
+                id="username"
+                onChange={handleInput}
+              />
+            </form>
+          </li>
+        </ul>
+      </div>
+      <div className="passwordAuthBox">
+        <Button variant="contained" component="label">
+          <input
+            name="fileUpload"
+            hidden
+            accept="image/*"
+            type="file"
+            onChange={onFileUpload}
+          />
+          Upload Display Picture
+        </Button>
+      </div>
+      <div className="Role">
+        <FormControl>
+          <FormLabel id="demo-radio-buttons-group-label">Role</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="Buy Only"
+            name="radio-buttons-group"
+            onChange={handleRole}
+          >
+            <FormControlLabel
+              value="false"
+              control={<Radio />}
+              label="I'm Buying Only"
+            />
+            <FormControlLabel
+              value="true"
+              control={<Radio />}
+              label="I'm Selling, Gimme that Money"
+            />
+          </RadioGroup>
+        </FormControl>
+      </div>
+      <div className="FormSubmit">
+        <Button
+          variant="contained"
+          component="label"
+          onClick={handleSubmit}
+          color="success"
+        >
+          Submit Form
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export { UploadPicture };
-
-// import React, { useState } from "react";
-// // import { storage, database } from "../firebase";
-// // import { ref as refdb, set, child } from "firebase/database";
-// // import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-// import { Navigate } from "react-router-dom";
-
-// const UploadPicture = (props) => {
-//   const [imageurl, setimageurl] = useState(null);
-//   const [selectedFile, setUploadFile] = useState(null);
-//   const [progress, setProgress] = useState();
-
-//   // const storageRef = ref(storage);
-//   // const profilePicFolderRef = ref(storageRef, "ProfilePictures");
-
-//   // const imagesRef = ref(
-//   //   profilePicFolderRef,
-//   //   progress === 100 ? selectedFile.name : "soundonly_1_re.jpg"
-//   // );
-
-//   // getDownloadURL(imagesRef)
-//   //   .then((url) => {
-//   //     setimageurl(url);
-//   //   })
-//   //   .catch((error) => {
-//   //     // A full list of error codes is available at
-//   //     // https://firebase.google.com/docs/storage/web/handle-errors
-//   //     switch (error.code) {
-//   //       case "storage/object-not-found":
-//   //         window.alert("File doesn't exist"); // File doesn't exist
-//   //         break;
-//   //       case "storage/unauthorized":
-//   //         window.alert("User doesn't have permission to access the object"); // User doesn't have permission to access the object
-//   //         break;
-//   //       case "storage/canceled":
-//   //         window.alert("User canceled the upload"); // User canceled the upload
-//   //         break;
-//   //       case "storage/unknown":
-//   //         window.alert("Unknown error occurred, inspect the server response"); // Unknown error occurred, inspect the server response
-//   //         break;
-//   //       default:
-//   //         window.alert("critical error");
-//   //         break;
-//   //     }
-//   //   });
-
-//   const handleChange = (event) => {
-//     setUploadFile(event.target.files[0]);
-//   };
-
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     // if (selectedFile == null) {
-//     //   window.alert(
-//     //     "Please choose file to upload or click on the profile button on the navtab to continue without a profile pic"
-//     //   );
-//     //   return;
-//     // }
-//     // const storageRef = ref(
-//     //   storage,
-//     //   `ProfilePictures/${props.info.userID}/${selectedFile.name}`
-//     // );
-//     // const uploadTask = uploadBytesResumable(storageRef, selectedFile);
-//     // uploadTask.on("state_changed", (snapshot) => {
-//     //   const prog = Math.round(
-//     //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-//     //   );
-//     //   setProgress(prog);
-//     //   switch (snapshot.state) {
-//     //     case "paused":
-//     //       console.log("Upload is paused");
-//     //       break;
-//     //     case "running":
-//     //       console.log("Upload is running");
-//     //       break;
-//     //     default:
-//     //       break;
-//     //   }
-//     // });
-//   };
-
-//   const setAsNewProfile = (event) => {
-//     event.preventDefault();
-//     // props.setter((prev) => ({
-//     //   ...prev,
-//     //   profilePicURL: `${selectedFile.name}`,
-//     // }));
-
-//     // const messagesRef = refdb(database, `users/${props.info.userID}`);
-//     // const childRef = child(messagesRef, "profilePicURL");
-//     // set(childRef, `${selectedFile.name}`);
-//     // return <Navigate to="/Profile" />;
-//   };
-
-//   return (
-//     <div>
-//       <label>Upload a new Profile Picture</label>
-//       {imageurl != null && (
-//         <img style={{ width: 300, height: 300 }} src={imageurl} alt="lolz" />
-//       )}
-//       <form style={{ top: 380 }} onSubmit={handleSubmit}>
-//         <input type="file" onChange={handleChange} />
-//         <br />
-//         <input type="submit" value="Upload" />
-//       </form>
-//       <h3 style={{ top: 400 }}>{progress === 100 && "Upload Completed"}</h3>
-//       {progress === 100 && (
-//         <div>
-//           <form style={{ top: 450 }} onSubmit={setAsNewProfile}>
-//             <label>Confirm new Profile Picture</label>
-//             <br />
-//             <input type="submit" value="OK" />
-//           </form>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export { UploadPicture };

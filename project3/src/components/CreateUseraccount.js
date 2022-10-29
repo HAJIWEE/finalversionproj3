@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -17,7 +17,7 @@ const Create = (props) => {
   const [username, setUsername] = useState("");
   const [file, setfile] = useState(null);
   const [imageUrl, setURL] = useState("");
-  const [UUID, setUUID] = useState("");
+  const [userEmail, setUUID] = useState("");
   const [Role, setRole] = useState("");
   const [userExists, setUserExisting] = useState(undefined);
 
@@ -29,10 +29,9 @@ const Create = (props) => {
     if (user !== undefined) {
       setUUID(user.email);
     }
-    console.log("THIS IS" + UUID);
-    if (UUID !== "" && UUID !== undefined) {
+    if (userEmail !== "" && userEmail !== undefined) {
       await axios
-        .get(`${BACKEND_URL}/User/${UUID}`, {
+        .get(`${BACKEND_URL}/User/${userEmail}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -47,7 +46,9 @@ const Create = (props) => {
             setUserExisting(false);
           }
         })
-        .catch((err) => {});
+        .catch((err) => {
+          setUserExisting(false);
+        });
     }
   }
   async function handleRole(event, newValue) {
@@ -73,7 +74,8 @@ const Create = (props) => {
       return setURL(url);
     }
   }
-  async function handleSubmit() {
+  async function handleSubmit(event) {
+    event.preventDefault();
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
@@ -82,7 +84,7 @@ const Create = (props) => {
     await axios
       .post(
         `${BACKEND_URL}/User`,
-        { username, imageUrl, UUID, Role },
+        { username, imageUrl, userEmail, Role },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -93,9 +95,7 @@ const Create = (props) => {
         console.log(imageUrl);
         setUserExisting(true);
       })
-      .catch((err) => {
-        window.alert(err);
-      });
+      .catch((err) => {});
   }
   async function onFileUpload(event) {
     setfile(event.target.files);

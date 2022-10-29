@@ -1,185 +1,150 @@
-import React from "react";
-// import { Outlet, Link } from "react-router-dom";
-
-const Upload = () => {
-  return <div>this is the Upload page</div>;
-};
-
-export { Upload };
-
-// import React, { useState } from "react";
-// // import { push, ref as databaseRef, set, update } from "firebase/database";
-// // import { database, storage } from "../firebase";
-// // import {
-// //   getDownloadURL,
-// //   ref as storageRef,
-// //   uploadBytes,
-// // } from "firebase/storage";
-// import { Link, Navigate } from "react-router-dom";
-// import "./cssfiles/Upload.css";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import "./cssfiles/Upload.css";
 // //***imports from images folder***
-// import divider from "./images/NavBar Divider.svg";
+import divider from "./images/NavBar Divider.svg";
 // //***imports from react-bootstrap***
-// // import Card from "react-bootstrap/Card";
-// import Button from "react-bootstrap/Button";
-// import Container from "react-bootstrap/Container";
-// import Row from "react-bootstrap/Row";
-// //***imports from react-iconly***
-// // import { CaretLeft } from "react-iconly";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { BACKEND_URL } from "../constants";
+import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 // const UPLOAD_IMAGES_FOLDER_NAME = "ItemStorage";
 // const USERS_FOLDER_NAME = "users";
 // const ITEMS_FOLDER_NAME = "items";
 // const USER_SALES_FOLDER_NAME = "sales";
 
-// const Upload = (props) => {
-//   const initialState = {
-//     itemName: "",
-//     itemPrice: 0,
-//     itemDescription: "",
-//     itemSalesStatus: "available",
-//     sellerUserId: props.info.userID,
-//   };
+const Upload = (props) => {
+  const { user, getAccessTokenSilently } = useAuth0();
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setPrice] = useState(0);
+  const [itemDescription, setDes] = useState("");
+  const [imageUpload, setImageUpload] = useState(null);
 
-//   const [newUpload, setNewUpload] = useState(initialState);
-//   console.log(props);
+  async function uploadimage() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    if (imageUpload != null) {
+      const formData = new FormData();
+      formData.append("file", imageUpload[0]);
+      const { data } = await axios.post(
+        `${BACKEND_URL}/uploadimage`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const { url } = data;
+      return url;
+    }
+  }
 
-//   const [imageUpload, setImageUpload] = useState({
-//     imageInputValue: "",
-//     imageInputFile: null,
-//   });
+  const handleSubmit = async (event) => {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    event.preventDefault();
+    const itemImageURL = await uploadimage();
+    console.log(itemImageURL);
+    const UUID = user.email;
+    if (itemImageURL !== undefined) {
+      await axios.post(
+        `${BACKEND_URL}/list`,
+        { itemName, itemPrice, itemImageURL, itemDescription, UUID },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    }
+  };
 
-//   const handleNewUpload = (event) => {
-//     const { name, value } = event.target;
-//     setNewUpload({
-//       ...newUpload,
-//       [name]: value,
-//     });
-//   };
+  return (
+    <div>
+      <Container className="uploadPage">
+        <Row className="uploadTitleBar">
+          <Link to="/newsfeed">
+            <ChevronLeftIcon fontSize="large" color="success" />
+          </Link>
+          <label className="uploadTitle">Upload</label>
+        </Row>
+        <Row className="uploadDivider">
+          <img src={divider} alt="divider" />
+        </Row>
+        <Row className="bodyBox">
+          <label className="titleLabel">What do you want to sell today?</label>
+          <Row className="inputBox">
+            <form onSubmit={handleSubmit}>
+              <label for="itemName" className="uploadLabel">
+                Item Name
+              </label>
+              <input
+                className="textBox"
+                type="text"
+                id="itemName"
+                name="itemName"
+                onChange={(event) => setItemName(event.target.value)}
+                required
+              />
 
-//   const handleImageUpload = (event) => {
-//     setImageUpload({
-//       imageInputValue: event.target.value,
-//       imageInputFile: event.target.files[0],
-//     });
-//   };
+              <label for="itemPrice" className="uploadLabel">
+                Item Price
+              </label>
+              <div class="currency-wrap">
+                <span class="currency-code">$</span>
+                <input
+                  className="textBox"
+                  type="number"
+                  id="itemPrice"
+                  name="itemPrice"
+                  min={1}
+                  onChange={(event) => setPrice(event.target.value)}
+                  required
+                />
+              </div>
 
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     // console.log("this is newupload");
-//     // console.log(!newUpload);
-//     // const fileRef = storageRef(
-//     //   storage,
-//     //   `${UPLOAD_IMAGES_FOLDER_NAME}/${props.info.userID}/${imageUpload.imageInputFile.name}`
-//     // );
+              <label for="itemImage" className="uploadLabel">
+                Item Image
+              </label>
+              <input
+                className="textBox"
+                type="file"
+                id="itemImage"
+                name="itemImage"
+                onChange={(event) => setImageUpload(event.target.value)}
+                required
+              />
 
-//     // uploadBytes(fileRef, imageUpload.imageInputFile).then(() => {
-//     //   getDownloadURL(fileRef).then((downloadUrl) => {
-//     //     const itemsListRef = databaseRef(database, ITEMS_FOLDER_NAME);
-//     //     const newItemRef = push(itemsListRef);
-//     //     const newItemRefKey = newItemRef.key;
-//     //     console.log(newItemRefKey);
-//     //     set(newItemRef, {
-//     //       ...newUpload,
-//     //       itemImage: downloadUrl,
-//     //     });
-//     //     setNewUpload(initialState);
-//     //     setImageUpload({ imageInputValue: "", imageInputFile: null });
-//     //     const updates = {};
-//     //     updates[
-//     //       `/${USERS_FOLDER_NAME}/${props.info.userID}/${USER_SALES_FOLDER_NAME}/${newItemRefKey}`
-//     //     ] = "";
-//     //     update(databaseRef(database), updates);
-//     //   });
-//     // });
-//   };
+              <label for="itemName" className="uploadLabel">
+                Item Description
+              </label>
+              <textarea
+                id="itemDescription"
+                name="itemDescription"
+                rows="3"
+                onChange={(event) => setDes(event.target.value)}
+                required
+              />
 
-//   return (
-//     <div>
-//       {props.info.userIsLoggedIn ? (
-//         <Container className="uploadPage">
-//           <Row className="uploadTitleBar">
-//             <Link to="/newsfeed">
-//               {/* <CaretLeft set="bold" primaryColor="#2FF522" /> */}
-//             </Link>
-//             <label className="uploadTitle">Upload</label>
-//           </Row>
-//           <Row className="uploadDivider">
-//             <img src={divider} alt="divider" />
-//           </Row>
-//           <Row className="bodyBox">
-//             <label className="titleLabel">
-//               What do you want to sell today?
-//             </label>
-//             <Row className="inputBox">
-//               <form onSubmit={handleSubmit}>
-//                 <label for="itemName" className="uploadLabel">
-//                   Item Name
-//                 </label>
-//                 <input
-//                   className="textBox"
-//                   type="text"
-//                   id="itemName"
-//                   name="itemName"
-//                   value={newUpload.itemName}
-//                   onChange={handleNewUpload}
-//                   required
-//                 />
+              <Button className="buttonBox" type="submit">
+                Start Selling!
+              </Button>
+            </form>
+          </Row>
+        </Row>
+      </Container>
+    </div>
+  );
+};
 
-//                 <label for="itemPrice" className="uploadLabel">
-//                   Item Price
-//                 </label>
-//                 <div class="currency-wrap">
-//                   <span class="currency-code">$</span>
-//                   <input
-//                     className="textBox"
-//                     type="number"
-//                     id="itemPrice"
-//                     name="itemPrice"
-//                     min={1}
-//                     value={newUpload.itemPrice}
-//                     onChange={handleNewUpload}
-//                     required
-//                   />
-//                 </div>
-
-//                 <label for="itemImage" className="uploadLabel">
-//                   Item Image
-//                 </label>
-//                 <input
-//                   className="textBox"
-//                   type="file"
-//                   id="itemImage"
-//                   name="itemImage"
-//                   value={imageUpload.imageInputValue}
-//                   onChange={handleImageUpload}
-//                   required
-//                 />
-
-//                 <label for="itemName" className="uploadLabel">
-//                   Item Description
-//                 </label>
-//                 <textarea
-//                   id="itemDescription"
-//                   name="itemDescription"
-//                   rows="3"
-//                   value={newUpload.itemDescription}
-//                   onChange={handleNewUpload}
-//                   required
-//                 />
-
-//                 <Button className="buttonBox" type="submit">
-//                   Start Selling!
-//                 </Button>
-//               </form>
-//             </Row>
-//           </Row>
-//         </Container>
-//       ) : (
-//         <Navigate to="/login" replace={true} />
-//       )}
-//     </div>
-//   );
-// };
-
-// export { Upload };
+export { Upload };

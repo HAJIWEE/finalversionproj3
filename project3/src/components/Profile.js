@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { BACKEND_URL } from "../constants";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
@@ -8,12 +10,13 @@ import { Button } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 
 const Profile = (props) => {
-  const { isAuthenticated, isLoading, logout } = useAuth0();
+  const { isAuthenticated, isLoading, logout, getAccessTokenSilently } =
+    useAuth0();
   const { user } = useAuth0();
+  const [imageurl, seturl] = useState("");
+  const [usename, setusername] = useState("");
 
   if (user !== undefined) {
-    const userId = user.sub.split("|")[1];
-    console.log(user);
   }
 
   if (isLoading) {
@@ -25,6 +28,28 @@ const Profile = (props) => {
   // }
 
   if (isAuthenticated) {
+    async function getuserInfo() {
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://Proj3/api`,
+        scope: "read:current_user",
+      });
+
+      const UUID = user.email;
+      const transaction = await axios.get(`${BACKEND_URL}/User/${UUID}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const { data } = transaction;
+      const { dpurl, username } = data;
+      console.log(dpurl);
+      seturl(dpurl);
+      setusername(username);
+    }
+
+    getuserInfo();
+
     return (
       <div className="profilepage">
         <ul>
@@ -48,11 +73,7 @@ const Profile = (props) => {
               <ul className="Profilelist">
                 <li>
                   {isAuthenticated && user !== null ? (
-                    <img
-                      // className="CircleBorder"
-                      src={user.picture}
-                      alt="lolz"
-                    />
+                    <img className="CircleBorder" src={imageurl} alt="lolz" />
                   ) : (
                     <div className="CircleBorder">
                       {<FaceIcon className="svg_icons" />}
@@ -60,11 +81,11 @@ const Profile = (props) => {
                   )}
                 </li>
                 <li className="changeDisplayPic">
-                  <Link to="uploadpicture"> Upload New Picture</Link>
+                  <Link to="uploadpicture">Update Account Details</Link>
                 </li>
                 <li>
                   <ul className="UserDetails">
-                    <li className="info">{user.name}</li>
+                    <li className="info">{usename}</li>
                   </ul>
                 </li>
 

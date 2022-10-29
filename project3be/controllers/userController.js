@@ -8,18 +8,17 @@ class userController extends BaseController {
 
   // Create user
   async insertOne(req, res) {
-    const { username, imageUrl, UUID, Role } = req.body;
-    console.log(imageUrl);
-    console.log(username);
+    const { username, imageUrl, userEmail, Role } = req.body;
     try {
-      // Create new user
+      // Create new userSEQUE
+      console.log("hi");
       const newUser = await this.model.create({
-        user_id: UUID,
+        user_id: userEmail,
         username: username,
         dpurl: imageUrl,
         role: Role,
       });
-      // Respond with new sighting
+      // Respond with new user
       return res.json(newUser);
     } catch (err) {
       console.log(err);
@@ -34,8 +33,29 @@ class userController extends BaseController {
       const CurrUser = await this.model.findOne({
         where: { user_id: UUID },
       });
-      console.log(CurrUser);
       return res.json(CurrUser);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async updateOne(req, res) {
+    const { UUID } = req.params;
+    const { username, imageUrl, Role } = req.body;
+    console.log(imageUrl);
+    console.log(username);
+    try {
+      // Create new user
+      const newUser = await this.model.update(
+        {
+          username: username,
+          dpurl: imageUrl,
+          role: Role,
+        },
+        { where: { user_id: UUID } }
+      );
+      // Respond with new sighting
+      return res.json(newUser);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: true, msg: err });

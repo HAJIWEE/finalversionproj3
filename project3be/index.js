@@ -5,13 +5,15 @@ const { auth } = require("express-oauth2-jwt-bearer");
 const navHistoryRouter = require("./routers/navhistoryRouter");
 const imageRouter = require("./routers/imageRouter.js");
 const userRouter = require("./routers/userRouter.js");
+const listingRouter = require("./routers/listingRouter");
 // importing Controllers
 const userController = require("./controllers/userController");
 const navhistoryController = require("./controllers/navhistoryController");
+const listingController = require("./controllers/listingController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhist, Users } = db;
+const { navhist, Users, listings, itemsforsale } = db;
 
 const config = {
   authRequired: false,
@@ -32,10 +34,14 @@ const checkJwt = auth({
 // initializing Controllers -> note the lowercase for the first word
 const navHistoryCon = new navhistoryController(navhist);
 const userCon = new userController(Users);
+const listingCon = new listingController(listings);
+
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
-const UserRouter = new userRouter(userCon, checkJwt).routes();
+const UserRouter = new userRouter(userCon).routes();
+const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
+
 const PORT = 4000;
 const app = express();
 
@@ -51,6 +57,8 @@ app.use("/navhistory", navhistoryRouter);
 app.use("/uploadimage", ImageRouter);
 
 app.use("/User", UserRouter);
+
+app.use("/list", ListingRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
