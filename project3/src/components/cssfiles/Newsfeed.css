@@ -37,6 +37,9 @@
   align-items: center;
   justify-content: center;
 }
+.svg_icons_small {
+  transform: scale(2);
+}
 .InstaCard {
   list-style: none;
   width: 350px;
@@ -72,8 +75,7 @@
 .likebtn {
   position: relative;
   z-index: 0;
-  margin-left: 20px;
-  margin-top: -310px;
+  top: 10%;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -97,11 +99,12 @@
   height: 30px;
   background: linear-gradient(0deg, #f8ba2b, #f8ba2b), #26c41b;
   border-radius: 35px;
+  margin-right: 5px;
 }
 .pricetable {
   display: flex;
   flex-flow: row-reverse;
-  margin: 10px;
+  margin: 0px 10px 0px 0px;
   list-style: none;
 }
 .ItemTitle {

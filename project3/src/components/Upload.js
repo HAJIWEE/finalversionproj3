@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import "./cssfiles/Upload.css";
 // //***imports from images folder***
@@ -24,6 +24,37 @@ const Upload = (props) => {
   const [itemPrice, setPrice] = useState(0);
   const [itemDescription, setDes] = useState("");
   const [imageUpload, setImageUpload] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [dpurl, seturl] = useState("");
+  const [usename, setusername] = useState("");
+
+  async function getuserInfo() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+
+    const UUID = user.email;
+    const transaction = await axios.get(`${BACKEND_URL}/User/${UUID}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const { data } = transaction;
+    const { dpurl, username } = data;
+    console.log(dpurl);
+    seturl(dpurl);
+    setusername(username);
+  }
+
+  useEffect(() => {
+    getuserInfo();
+  }, []);
+
+  useEffect(() => {
+    uploadimage();
+  }, [imageUpload]);
 
   async function uploadimage() {
     const accessToken = await getAccessTokenSilently({
@@ -31,6 +62,7 @@ const Upload = (props) => {
       scope: "read:current_user",
     });
     if (imageUpload != null) {
+      console.log(imageUpload);
       const formData = new FormData();
       formData.append("file", imageUpload[0]);
       const { data } = await axios.post(
@@ -43,9 +75,21 @@ const Upload = (props) => {
         }
       );
       const { url } = data;
-      return url;
+      setImageUrl(url);
     }
   }
+
+  async function onFileUpload(event) {
+    await setImageUpload(event.target.files);
+  }
+
+  const handleItemNameChange = (event) => {
+    setItemName(event.target.value);
+  };
+
+  const handleItemPriceChange = (event) => {
+    setPrice(event.target.value);
+  };
 
   const handleSubmit = async (event) => {
     const accessToken = await getAccessTokenSilently({
@@ -53,13 +97,19 @@ const Upload = (props) => {
       scope: "read:current_user",
     });
     event.preventDefault();
-    const itemImageURL = await uploadimage();
-    console.log(itemImageURL);
     const UUID = user.email;
-    if (itemImageURL !== undefined) {
+    if (imageUrl !== undefined) {
       await axios.post(
         `${BACKEND_URL}/list`,
-        { itemName, itemPrice, itemImageURL, itemDescription, UUID },
+        {
+          itemName,
+          itemPrice,
+          imageUrl,
+          itemDescription,
+          UUID,
+          dpurl,
+          usename,
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -93,7 +143,7 @@ const Upload = (props) => {
                 type="text"
                 id="itemName"
                 name="itemName"
-                onChange={(event) => setItemName(event.target.value)}
+                onChange={handleItemNameChange}
                 required
               />
 
@@ -108,7 +158,7 @@ const Upload = (props) => {
                   id="itemPrice"
                   name="itemPrice"
                   min={1}
-                  onChange={(event) => setPrice(event.target.value)}
+                  onChange={handleItemPriceChange}
                   required
                 />
               </div>
@@ -119,9 +169,8 @@ const Upload = (props) => {
               <input
                 className="textBox"
                 type="file"
-                id="itemImage"
-                name="itemImage"
-                onChange={(event) => setImageUpload(event.target.value)}
+                accept="image/*"
+                onChange={onFileUpload}
                 required
               />
 

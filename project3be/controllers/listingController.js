@@ -8,15 +8,26 @@ class listingController extends BaseController {
 
   // Create listing
   async insertOne(req, res) {
-    const { itemName, itemPrice, itemImageURL, itemDescription } = req.body;
+    const {
+      itemName,
+      itemPrice,
+      imageUrl,
+      itemDescription,
+      UUID,
+      dpurl,
+      usename,
+    } = req.body;
     try {
       // Create new user
       const newListing = await this.model.create({
         itemName: itemName,
         itemPrice: itemPrice,
-        itemImageUrl: itemImageUrl,
+        itemImageUrl: imageUrl,
         itemDescription: itemDescription,
+        sellerUserID: UUID,
         itemSalesStatus: "Available",
+        sellerUserName: usename,
+        sellerdpURL: dpurl,
       });
       // Respond with new sighting
       return res.json(newListing);
@@ -41,8 +52,10 @@ class listingController extends BaseController {
 
   async getAll(req, res) {
     try {
-      const ItemList = await this.model.findAll();
-      return res.json(itemImageURL);
+      const ItemList = await this.model.findAll({
+        where: { itemSalesStatus: "Available" },
+      });
+      return res.json(ItemList);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: true, msg: err });

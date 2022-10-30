@@ -15,7 +15,7 @@ const paymentCon = require("./controllers/paymentController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhist, Users, listings, itemsforsale, payment } = db;
+const { navhist, Users, listing, itemsforsale, payment } = db;
 
 const config = {
   authRequired: false,
@@ -36,7 +36,7 @@ const checkJwt = auth({
 // initializing Controllers -> note the lowercase for the first word
 const navHistoryCon = new navhistoryController(navhist);
 const userCon = new userController(Users);
-const listingCon = new listingController(listings);
+const listingCon = new listingController(listing);
 const PaymentCon = new paymentCon(payment);
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();

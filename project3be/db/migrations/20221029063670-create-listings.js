@@ -18,10 +18,19 @@ module.exports = {
       itemDescription: {
         type: Sequelize.STRING,
       },
+      itemImageUrl: {
+        type: Sequelize.STRING,
+      },
       itemSalesStatus: {
         type: Sequelize.STRING,
       },
       sellerUserID: {
+        type: Sequelize.STRING,
+      },
+      sellerUserName: {
+        type: Sequelize.STRING,
+      },
+      sellerdpURL: {
         type: Sequelize.STRING,
       },
       createdAt: {

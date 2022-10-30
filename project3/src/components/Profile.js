@@ -10,9 +10,8 @@ import { Button } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 
 const Profile = (props) => {
-  const { isAuthenticated, isLoading, logout, getAccessTokenSilently } =
+  const { user, isAuthenticated, isLoading, logout, getAccessTokenSilently } =
     useAuth0();
-  const { user } = useAuth0();
   const [imageurl, seturl] = useState("");
   const [usename, setusername] = useState("");
 
@@ -72,7 +71,7 @@ const Profile = (props) => {
             <div className="Profilebox">
               <ul className="Profilelist">
                 <li>
-                  {isAuthenticated && user !== null ? (
+                  {isAuthenticated && user !== null && imageurl !== "" ? (
                     <img className="CircleBorder" src={imageurl} alt="lolz" />
                   ) : (
                     <div className="CircleBorder">
