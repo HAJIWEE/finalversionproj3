@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import { BACKEND_URL } from "../constants";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -7,7 +8,6 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import EmailIcon from "@mui/icons-material/Email";
 import Button from "@mui/material/Button";
-import { BACKEND_URL } from "../constants";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./cssfiles/login.css";
 import axios from "axios";

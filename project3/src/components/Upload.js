@@ -9,14 +9,10 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { BACKEND_URL } from "../constants";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
-// const UPLOAD_IMAGES_FOLDER_NAME = "ItemStorage";
-// const USERS_FOLDER_NAME = "users";
-// const ITEMS_FOLDER_NAME = "items";
-// const USER_SALES_FOLDER_NAME = "sales";
+import { BACKEND_URL } from "../constants";
 
 const Upload = (props) => {
   const { user, getAccessTokenSilently } = useAuth0();

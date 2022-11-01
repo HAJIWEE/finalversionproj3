@@ -24,7 +24,7 @@ const App = () => {
     <Auth0Provider
       domain={"dev-oa1xn--2.us.auth0.com"}
       clientId={"r1hyr9OFqf6CnWGu0AviG3FwBLgtHX7V"}
-      redirectUri={"http://localhost:3000/profile"}
+      redirectUri={"http://localhost:3000/createaccount"}
       audience="https://Proj3/api"
       scope="read:current_user update:current_user_metadata"
     >

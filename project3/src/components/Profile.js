@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { BACKEND_URL } from "../constants";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
@@ -8,6 +7,8 @@ import "./cssfiles/Profile.css";
 import divider from "./images/NavBar Divider.svg";
 import { Button } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
+
+import { BACKEND_URL } from "../constants";
 
 const Profile = (props) => {
   const { user, isAuthenticated, isLoading, logout, getAccessTokenSilently } =
@@ -112,7 +113,9 @@ const Profile = (props) => {
                   <Button
                     variant="contained"
                     onClick={() =>
-                      logout({ returnTo: "http://localhost:3000/newsfeed" })
+                      logout({
+                        returnTo: "http://localhost:3000/newsfeed",
+                      })
                     }
                     color="success"
                     size="large"

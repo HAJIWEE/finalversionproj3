@@ -41,11 +41,11 @@ const PaymentCon = new paymentCon(payment);
 // inittializing Routers
 const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
-const UserRouter = new userRouter(userCon).routes();
+const UserRouter = new userRouter(userCon, checkJwt).routes();
 const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
 const PaymentRouter = new paymentRouter(PaymentCon, checkJwt).routes();
 
-const PORT = 4000;
+const PORT = process.env.PORT;
 const app = express();
 
 // Enable CORS access to this server

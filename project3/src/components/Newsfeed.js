@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { BACKEND_URL } from "../constants";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./cssfiles/Newsfeed.css";
-// // import { User, Heart } from "react-iconly";
 import sample from "./images/Gendou card.png";
 import { Outlet, Link } from "react-router-dom";
 import FaceIcon from "@mui/icons-material/Face";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { color } from "@mui/system";
 import { green } from "@mui/material/colors";
+
+import { BACKEND_URL } from "../constants";
 
 const Newsfeed = (props) => {
   const { user, isAuthenticated, isLoading, logout, getAccessTokenSilently } =

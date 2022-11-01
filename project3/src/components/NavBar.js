@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import { BACKEND_URL } from "../constants";
 import axios from "axios";
 import { Outlet, Link } from "react-router-dom";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -11,6 +10,8 @@ import UploadIcon from "@mui/icons-material/Upload";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth0 } from "@auth0/auth0-react";
+
+const BACKEND_URL = process.env.BACKEND_URL;
 
 export function Nav(props) {
   const [value, setValue] = useState("recents");

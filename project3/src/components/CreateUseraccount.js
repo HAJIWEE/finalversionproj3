@@ -7,10 +7,11 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import EmailIcon from "@mui/icons-material/Email";
 import Button from "@mui/material/Button";
-import { BACKEND_URL } from "../constants";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./cssfiles/login.css";
 import axios from "axios";
+
+import { BACKEND_URL } from "../constants";
 
 const Create = (props) => {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -76,6 +77,7 @@ const Create = (props) => {
   }
   async function handleSubmit(event) {
     event.preventDefault();
+    console.log(BACKEND_URL);
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
