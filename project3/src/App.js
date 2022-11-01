@@ -45,6 +45,7 @@ const App = () => {
           <Route path="search" element={<Search />} />
           <Route path="upload" element={<Upload />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="cart/payment" element={<PaymentMethod />} />
           <Route path="orders" element={<Orders />} />
           <Route path="sales" element={<Sales />} />
         </Route>
