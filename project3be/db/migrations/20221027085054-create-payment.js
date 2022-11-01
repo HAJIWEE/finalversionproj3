@@ -9,8 +9,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      user_id: {
-        type: Sequelize.UUID,
+      userEmail: {
+        type: Sequelize.STRING,
       },
       cart_id: {
         type: Sequelize.INTEGER,
@@ -20,6 +20,9 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       instalment_period: {
+        type: Sequelize.INTEGER,
+      },
+      monthly_amount: {
         type: Sequelize.INTEGER,
       },
       full_payment: {
