@@ -1,6 +1,15 @@
 import React from "react";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+
 const Cart = (props) => {
-  return <div>this is the Cart page</div>;
+  return (
+    <div>
+      <Link to="/cart/payment">
+        <Button variant="contained">Check out</Button>
+      </Link>
+    </div>
+  );
 };
 
 export { Cart };
