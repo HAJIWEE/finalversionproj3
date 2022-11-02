@@ -7,15 +7,17 @@ const imageRouter = require("./routers/imageRouter.js");
 const userRouter = require("./routers/userRouter.js");
 const listingRouter = require("./routers/listingRouter");
 const paymentRouter = require("./routers/paymentRouter");
+const cartRouter = require("./routers/cartRouter");
 // importing Controllers
 const userController = require("./controllers/userController");
 const navhistoryController = require("./controllers/navhistoryController");
 const listingController = require("./controllers/listingController");
-const paymentCon = require("./controllers/paymentController");
+const paymentController = require("./controllers/paymentController");
+const cartController = require("./controllers/cartController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhist, Users, listing, itemsforsale, payment } = db;
+const { navhist, Users, listing, cart, payment } = db;
 
 const config = {
   authRequired: false,
@@ -37,13 +39,15 @@ const checkJwt = auth({
 const navHistoryCon = new navhistoryController(navhist);
 const userCon = new userController(Users);
 const listingCon = new listingController(listing);
-const PaymentCon = new paymentCon(payment);
+const paymentCon = new paymentController(payment);
+const cartCon = new cartController(cart);
 // inittializing Routers
-const navhistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
+const NavHistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon, checkJwt).routes();
 const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
-const PaymentRouter = new paymentRouter(PaymentCon, checkJwt).routes();
+const PaymentRouter = new paymentRouter(paymentCon, checkJwt).routes();
+const CartRouter = new cartRouter(cartCon, checkJwt).routes();
 
 const PORT = process.env.PORT;
 const app = express();
@@ -55,7 +59,7 @@ app.use(cors());
 app.use(express.json());
 
 // auth router attaches /login, /logout, and /callback routes to the baseURL
-app.use("/navhistory", navhistoryRouter);
+app.use("/navhistory", NavHistoryRouter);
 
 app.use("/uploadimage", ImageRouter);
 
@@ -64,6 +68,8 @@ app.use("/User", UserRouter);
 app.use("/payment", PaymentRouter);
 
 app.use("/list", ListingRouter);
+
+app.use("/Add2Cart", CartRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

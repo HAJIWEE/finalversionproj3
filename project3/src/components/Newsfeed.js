@@ -12,8 +12,7 @@ import { green } from "@mui/material/colors";
 import { BACKEND_URL } from "../constants";
 
 const Newsfeed = (props) => {
-  const { user, isAuthenticated, isLoading, logout, getAccessTokenSilently } =
-    useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [newsfeedItems, setNewsfeedItems] = useState();
   const [dpurl, setdisplayURL] = useState("");
   const [userName, setCurrUser] = useState("");
@@ -38,7 +37,23 @@ const Newsfeed = (props) => {
 
   const handleAddToCart = async (itemAddedToCart, event) => {
     event.preventDefault();
-    await axios.post();
+    const { id, itemName, itemPrice, sellerUserID } = itemAddedToCart;
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    const buyerUserID = user.email;
+    console.log({ id, itemName, itemPrice, sellerUserID, buyerUserID });
+    const res = await axios.post(
+      `${BACKEND_URL}/Add2Cart`,
+      { id, itemName, itemPrice, sellerUserID, buyerUserID },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(res);
   };
 
   //   //   // newsfeed rendering function
