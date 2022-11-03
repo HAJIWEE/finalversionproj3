@@ -1,32 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { Outlet, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { BACKEND_URL } from "../constants";
 import axios from "axios";
 import Box from "@mui/material/Box";
-import Slider from "@mui/material/Slider";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
 const PaymentMethod = () => {
-  const [cart_value, setCartValue] = useState(0);
+  const [cart_value, setCartValue] = useState(100);
   //get cartValue from frontend
   const [instalment_period, setInstalmentPeriod] = useState();
   const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [userEmail, setUserEmail] = useState("");
-  //get userEmail from frontend - passing of props
   const [full_payment, setFull_payment] = useState(false);
   const [cart_id, setCart_id] = useState("");
-  //const { user, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  /* const valueText = (value: number) => {
-    return `${value}`;
-  };
- */
   const handleChange = (event) => {
-    setInstalmentPeriod(event.target.value);
+    setInstalmentPeriod(Number(event.target.value));
     console.log(instalment_period);
+    return;
   };
+
+  const calculateMonth = () => {
+    if (instalment_period === 0) {
+      setMonthlyAmount(cart_value);
+      console.log(monthlyAmount);
+    } else {
+      setMonthlyAmount(cart_value / instalment_period);
+      console.log(monthlyAmount);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -44,63 +54,106 @@ const PaymentMethod = () => {
     }
   };
 
-  //get cart_id from cart page after clicking on checkout.
-  /*  const getData = async (event) => {
-    try {
-      const getResponse = await axios.get(`${BACKEND_URL}/Payment/:cart_id`);
-      const returnedData = getResponse.data;
-      setMonthlyAmount(returnedData.instalAmount);
-    } catch (error) {
-      console.log(error);
+  /*   if (isAuthenticated) {
+    async function getuserInfo() {
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://Proj3/api`,
+        scope: "read:current_user",
+      });
+      const transaction = await axios.get(`${BACKEND_URL}/User/${user.email}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const { data } = transaction;
+      const { UUID } = data;
+      setUserEmail(UUID);
+      console.log(userEmail);
     }
-  }; */
+    getuserInfo(); */
+
+  /* async function getCartId() {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    const { data } = await axios.get(`${BACKEND_URL}/cart`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(data);
+    await setCart_id(data);
+  }
+
+  useEffect(() => {
+    getCartId();
+  }, []); */
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div>
           <Box sx={{ width: 300 }}>
-            <span>Cart ID: {cart_id}</span>
-            <br />
-            <TextField
-              id="outlined-read-only-input"
-              label="UserEmail"
-              defaultValue={userEmail}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-
-            <TextField
-              id="outlined-read-only-input"
-              label="Total Amount"
-              defaultValue={cart_value}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-            <Box sx={{ width: 300, mx: 10 }}>
-              <span>Installment Duration</span>
-              <Slider
-                aria-label="Installment Period"
-                defaultValue={0}
-                getAriaValueText={instalment_period}
-                valueLabelDisplay="auto"
-                name="instalment_period"
-                onChange={handleChange}
-                step={1}
-                marks
-                min={1}
-                max={12}
+            <Box>
+              <TextField
+                id="outlined-read-only-input"
+                label="UserEmail"
+                defaultValue={userEmail}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
             </Box>
-            <TextField
-              id="outlined-read-only-input"
-              defaultValue={instalment_period}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
+            <Box>
+              <TextField
+                id="outlined-read-only-input"
+                label="Total Amount"
+                defaultValue={cart_value}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Box>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Installment Period
+                </InputLabel>
+                <Select
+                  labelId="Instalment Period"
+                  id="Period"
+                  value={instalment_period}
+                  label="Instalment Period"
+                  onChange={handleChange}
+                >
+                  <MenuItem value={0}>0</MenuItem>
+                  <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                  <MenuItem value={8}>8</MenuItem>
+                  <MenuItem value={9}>9</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={11}>11</MenuItem>
+                  <MenuItem value={12}>12</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Box>
+              <TextField
+                id="outlined-read-only-input"
+                label="Monthly Payment"
+                defaultValue={monthlyAmount}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </Box>
           </Box>
         </div>
         <br />
@@ -116,5 +169,6 @@ const PaymentMethod = () => {
     </div>
   );
 };
+//};
 
 export { PaymentMethod };
