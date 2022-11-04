@@ -1,41 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // import { Outlet, Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { BACKEND_URL } from "../constants";
+import "./cssfiles/Payment.css";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 
 const PaymentMethod = () => {
   const [cart_value, setCartValue] = useState(100);
   //get cartValue from frontend
-  const [instalment_period, setInstalmentPeriod] = useState();
+  const [instalment_period, setInstalmentPeriod] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0);
   const [userEmail, setUserEmail] = useState("");
   const [full_payment, setFull_payment] = useState(false);
   const [cart_id, setCart_id] = useState("");
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  const handleChange = (event) => {
-    setInstalmentPeriod(Number(event.target.value));
-    console.log(instalment_period);
-    return;
+  const calculateMonth = (a, b) => {
+    let monthPay = a / b;
+    return monthPay.toFixed(2);
   };
 
-  const calculateMonth = () => {
-    if (instalment_period === 0) {
-      setMonthlyAmount(cart_value);
-      console.log(monthlyAmount);
-    } else {
-      setMonthlyAmount(cart_value / instalment_period);
-      console.log(monthlyAmount);
-    }
+  const handleChange = (event) => {
+    setInstalmentPeriod(event.target.value);
   };
+
+  /* const monthlyPayment = useCallback(
+    (a) => {
+      if (a !== 0) {
+        let payMonth = calculateMonth(cart_value, instalment_period + 1);
+        return payMonth;
+      } else {
+        return cart_value;
+      }
+    },
+    [cart_value, instalment_period]
+  ); */
+
+  /* const monthlyPayment = (a) => {
+    if (a !== 0) {
+      let payMonth = calculateMonth(cart_value, instalment_period + 1);
+      return payMonth;
+    } else {
+      return cart_value;
+    }
+  }; */
+
+  useEffect(() => {
+    if (instalment_period !== 0) {
+      setMonthlyAmount(calculateMonth(cart_value, instalment_period + 1));
+    } else {
+      return setMonthlyAmount(cart_value);
+    }
+  }, [instalment_period, cart_value]);
+
+  console.log(instalment_period);
+  console.log(monthlyAmount);
+
+  /*  useEffect(() => {
+    const monthlyFinal = monthlyPayment(instalment_period);
+    setMonthlyAmount(monthlyFinal.toFixed(2));
+  }, [monthlyPayment, instalment_period]);
+  console.log(monthlyAmount); */
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,7 +105,7 @@ const PaymentMethod = () => {
     }
     getuserInfo(); */
 
-  /* async function getCartId() {
+  /*   async function getCartId() {
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
@@ -95,7 +127,7 @@ const PaymentMethod = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <Box sx={{ width: 300 }}>
+          <Box sx={{ maxWidth: 300 }}>
             <Box>
               <TextField
                 id="outlined-read-only-input"
@@ -116,8 +148,8 @@ const PaymentMethod = () => {
                 }}
               />
             </Box>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
+            <Box sx={{ Width: 200 }}>
+              <FormControl>
                 <InputLabel id="demo-simple-select-label">
                   Installment Period
                 </InputLabel>

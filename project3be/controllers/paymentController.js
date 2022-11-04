@@ -15,7 +15,7 @@ class PaymentController extends BaseController {
       monthly_amount,
     } = req.body;
     console.log(req.body);
-    console.log(cart_value);cd 
+    console.log(cart_value);
     console.log(cart_id);
     console.log(monthly_amount);
     try {
@@ -29,7 +29,7 @@ class PaymentController extends BaseController {
           full_payment: true,
         });
         console.log(res);
-        return res.json(newIOU);
+        res.json(newIOU);
       } else {
         for (let i = instalment_period; i > 0; i--) {
           newIOU = await this.model.create({
@@ -40,6 +40,8 @@ class PaymentController extends BaseController {
             instalment_period: instalment_period,
             full_payment: false,
           });
+          console.log(res);
+          return res.json(newIOU);
         }
       }
     } catch (err) {
