@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       userEmail: DataTypes.STRING,
       cart_id: DataTypes.INTEGER,
-      cart_value: DataTypes.INTEGER,
+      cart_value: DataTypes.DOUBLE,
       instalment_period: DataTypes.INTEGER,
       monthly_amount: DataTypes.DOUBLE,
       full_payment: DataTypes.BOOLEAN,

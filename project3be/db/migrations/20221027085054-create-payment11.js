@@ -17,7 +17,7 @@ module.exports = {
         unique: true,
       },
       cart_value: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
       instalment_period: {
         type: Sequelize.INTEGER,
