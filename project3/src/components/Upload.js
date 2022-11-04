@@ -13,6 +13,7 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { BACKEND_URL } from "../constants";
+import { Nav } from "react-bootstrap";
 
 const Upload = (props) => {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -23,6 +24,7 @@ const Upload = (props) => {
   const [imageUrl, setImageUrl] = useState("");
   const [dpurl, seturl] = useState("");
   const [usename, setusername] = useState("");
+  const [redirect, setRedirectState] = useState(false);
 
   async function getuserInfo() {
     const accessToken = await getAccessTokenSilently({
@@ -95,99 +97,110 @@ const Upload = (props) => {
     event.preventDefault();
     const UUID = user.email;
     if (imageUrl !== undefined) {
-      await axios.post(
-        `${BACKEND_URL}/list`,
-        {
-          itemName,
-          itemPrice,
-          imageUrl,
-          itemDescription,
-          UUID,
-          dpurl,
-          usename,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+      await axios
+        .post(
+          `${BACKEND_URL}/list`,
+          {
+            itemName,
+            itemPrice,
+            imageUrl,
+            itemDescription,
+            UUID,
+            dpurl,
+            usename,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+        .then(() => {
+          setRedirectState(true);
+        });
     }
   };
 
   return (
     <div>
-      <Container className="uploadPage">
-        <Row className="uploadTitleBar">
-          <Link to="/newsfeed">
-            <ChevronLeftIcon fontSize="large" color="success" />
-          </Link>
-          <label className="uploadTitle">Upload</label>
-        </Row>
-        <Row className="uploadDivider">
-          <img src={divider} alt="divider" />
-        </Row>
-        <Row className="bodyBox">
-          <label className="titleLabel">What do you want to sell today?</label>
-          <Row className="inputBox">
-            <form onSubmit={handleSubmit}>
-              <label for="itemName" className="uploadLabel">
-                Item Name
-              </label>
-              <input
-                className="textBox"
-                type="text"
-                id="itemName"
-                name="itemName"
-                onChange={handleItemNameChange}
-                required
-              />
-
-              <label for="itemPrice" className="uploadLabel">
-                Item Price
-              </label>
-              <div class="currency-wrap">
-                <span class="currency-code">$</span>
+      {redirect == true ? (
+        <div>
+          <Navigate to="/newsfeed" />
+        </div>
+      ) : (
+        <Container className="uploadPage">
+          <Row className="uploadTitleBar">
+            <Link to="/newsfeed">
+              <ChevronLeftIcon fontSize="large" color="success" />
+            </Link>
+            <label className="uploadTitle">Upload</label>
+          </Row>
+          <Row className="uploadDivider">
+            <img src={divider} alt="divider" />
+          </Row>
+          <Row className="bodyBox">
+            <label className="titleLabel">
+              What do you want to sell today?
+            </label>
+            <Row className="inputBox">
+              <form onSubmit={handleSubmit}>
+                <label for="itemName" className="uploadLabel">
+                  Item Name
+                </label>
                 <input
                   className="textBox"
-                  type="number"
-                  id="itemPrice"
-                  name="itemPrice"
-                  min={1}
-                  onChange={handleItemPriceChange}
+                  type="text"
+                  id="itemName"
+                  name="itemName"
+                  onChange={handleItemNameChange}
                   required
                 />
-              </div>
 
-              <label for="itemImage" className="uploadLabel">
-                Item Image
-              </label>
-              <input
-                className="textBox"
-                type="file"
-                accept="image/*"
-                onChange={onFileUpload}
-                required
-              />
+                <label for="itemPrice" className="uploadLabel">
+                  Item Price
+                </label>
+                <div class="currency-wrap">
+                  <span class="currency-code">$</span>
+                  <input
+                    className="textBox"
+                    type="number"
+                    id="itemPrice"
+                    name="itemPrice"
+                    min={1}
+                    onChange={handleItemPriceChange}
+                    required
+                  />
+                </div>
 
-              <label for="itemName" className="uploadLabel">
-                Item Description
-              </label>
-              <textarea
-                id="itemDescription"
-                name="itemDescription"
-                rows="3"
-                onChange={(event) => setDes(event.target.value)}
-                required
-              />
+                <label for="itemImage" className="uploadLabel">
+                  Item Image
+                </label>
+                <input
+                  className="textBox"
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileUpload}
+                  required
+                />
 
-              <Button className="buttonBox" type="submit">
-                Start Selling!
-              </Button>
-            </form>
+                <label for="itemName" className="uploadLabel">
+                  Item Description
+                </label>
+                <textarea
+                  id="itemDescription"
+                  name="itemDescription"
+                  rows="3"
+                  onChange={(event) => setDes(event.target.value)}
+                  required
+                />
+                <Button className="buttonBox" type="submit">
+                  Start Selling!
+                </Button>
+              </form>
+            </Row>
           </Row>
-        </Row>
-      </Container>
+        </Container>
+      )}
     </div>
   );
 };

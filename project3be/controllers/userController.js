@@ -42,8 +42,6 @@ class userController extends BaseController {
   async updateOne(req, res) {
     const { UUID } = req.params;
     const { username, imageUrl, Role } = req.body;
-    console.log(imageUrl);
-    console.log(username);
     try {
       // Create new user
       const newUser = await this.model.update(

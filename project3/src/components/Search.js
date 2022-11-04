@@ -16,15 +16,14 @@ import { Margin } from "@mui/icons-material";
 const Search = (props) => {
   const { user, getAccessTokenSilently } = useAuth0();
   const [newsfeedItems, setNewsfeedItems] = useState();
-  const [dpurl, setdisplayURL] = useState("");
-  const [userName, setCurrUser] = useState("");
+  const [Param, setsearchTerm] = useState("");
 
   async function getListings() {
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
     });
-    const { data } = await axios.get(`${BACKEND_URL}/list`, {
+    const { data } = await axios.get(`${BACKEND_URL}/list/search/${Param}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -32,10 +31,14 @@ const Search = (props) => {
     console.log(data);
     await setNewsfeedItems(data);
   }
+  const handleChange = (event) => {
+    event.preventDefault();
+    setsearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     getListings();
-  }, []);
+  }, [Param]);
 
   const handleAddToCart = async (itemAddedToCart, event) => {
     event.preventDefault();
@@ -60,7 +63,7 @@ const Search = (props) => {
 
   //   //   // newsfeed rendering function
   const newsfeedCards = (items) => {
-    if (newsfeedItems !== undefined) {
+    if (newsfeedItems !== undefined && newsfeedItems != null) {
       const card = items.map((item) => {
         const {
           itemName,
@@ -126,6 +129,7 @@ const Search = (props) => {
           InputProps={{
             readOnly: false,
           }}
+          onChange={handleChange}
           color="success"
           style={{
             width: 390,

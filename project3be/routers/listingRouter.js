@@ -15,6 +15,12 @@ class listingRouter {
 
     router.get("/", this.controller.getAll.bind(this.controller), this.auth);
 
+    router.get(
+      "/search/:Param",
+      this.controller.searchFor.bind(this.controller),
+      this.auth
+    );
+
     router.post(
       "/",
       this.auth,

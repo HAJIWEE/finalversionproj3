@@ -1,4 +1,5 @@
-const { STRING } = require("sequelize");
+const { CatchingPokemonSharp } = require("@mui/icons-material");
+const { STRING, Op } = require("sequelize");
 const BaseController = require("./baseController");
 
 class listingController extends BaseController {
@@ -40,10 +41,26 @@ class listingController extends BaseController {
   async getOne(req, res) {
     try {
       const { itemName } = req.params;
+      console.log(itemName);
       const reqItem = await this.model.findOne({
         where: { itemName: itemName },
       });
       return res.json(reqItem);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
+  async searchFor(req, res) {
+    try {
+      const { Param } = req.params;
+      console.log(Param);
+      const ItemList = await this.model.findAll({
+        where: { itemName: Param },
+      });
+      console.log(ItemList);
+      return res.json(ItemList);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: true, msg: err });
