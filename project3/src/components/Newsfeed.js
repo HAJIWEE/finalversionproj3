@@ -159,6 +159,7 @@ const Newsfeed = (props) => {
         </li>
       </ul>
       <div>{newsfeedCards(newsfeedItems)}</div>
+      <div className="extraSpace"></div>
     </div>
   );
 };

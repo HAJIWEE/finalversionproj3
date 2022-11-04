@@ -11,7 +11,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+import { BACKEND_URL } from "../constants";
 
 export function Nav(props) {
   const [value, setValue] = useState("recents");

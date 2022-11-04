@@ -10,16 +10,17 @@ class cartRouter {
     router.get("/", this.controller.getAll.bind(this.controller), this.auth);
 
     router.get(
-      "/:cart_id",
+      "/:user_id",
       this.controller.getAll.bind(this.controller),
       this.auth
     );
 
-    router.post(
-      "/",
-      this.auth,
-      this.controller.insertOne.bind(this.controller)
-    );
+    router.put("/", this.auth, this.controller.downOne.bind(this.controller)),
+      router.post(
+        "/",
+        this.auth,
+        this.controller.insertOne.bind(this.controller)
+      );
     //router.get("/:sightingId", this.controller.getOne.bind(this.controller));
     return router;
   }

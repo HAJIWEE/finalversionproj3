@@ -92,6 +92,7 @@ const PaymentMethod = () => {
       scope: "read:current_user",
     });
     const email = user.email;
+    console.log(email);
     const transaction = await axios.get(`${BACKEND_URL}/User/${email}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,

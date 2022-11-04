@@ -11,7 +11,6 @@ module.exports = {
       },
       cartID: {
         type: Sequelize.STRING,
-        unique: true,
       },
       itemId: {
         type: Sequelize.INTEGER,

@@ -53,35 +53,31 @@ class cartController extends BaseController {
     }
   }
 
+  async downOne(req, res) {
+    try {
+      const { id, cartID, itemName, buyerUserName } = req.body;
+      console.log(req.params);
+      const reqItem = await this.model.destroy({
+        where: {
+          id: id,
+          cartID: cartID,
+          itemName: itemName,
+          buyerUserName: buyerUserName,
+        },
+      });
+      return res.json(reqItem);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
+
   async getAll(req, res) {
     try {
-      console.log("hello");
-      var createCARTID = false;
-      const { id, itemName, itemPrice, sellerUserID, buyerUserID } = req.body;
-      const CurrcartID = "";
-      await this.model
-        .findOne({
-          where: { buyerUserName: buyerUserID },
-        })
-        .then((res) => {
-          const { cartID } = res;
-          CurrcartID = cartID;
-          console.log("here");
-        })
-        .catch(() => {
-          createCARTID = true;
-        });
-      if (createCARTID) {
-        CurrcartID = await createCARTID();
-        console.log(CurrcartID);
-      }
-      const reqItem = await this.model.create({
-        cartID: CurrcartID,
-        itemIc: id,
-        itemName: itemName,
-        itemPrice: itemPrice,
-        sellerUserName: sellerUserID,
-        buyerUserName: buyerUserID,
+      const { user_id } = req.params;
+      console.log(req.params);
+      const reqItem = await this.model.findAll({
+        where: { buyerUserName: user_id },
       });
       return res.json(reqItem);
     } catch (err) {
