@@ -14,12 +14,11 @@ import TextField from "@mui/material/TextField";
 
 const PaymentMethod = () => {
   const [cart_value, setCartValue] = useState(100);
-  //get cartValue from frontend
   const [instalment_period, setInstalmentPeriod] = useState(0);
-  const [monthlyAmount, setMonthlyAmount] = useState(0);
+  const [monthlyAmount, setMonthlyAmount] = useState(0.0);
   const [userEmail, setUserEmail] = useState("");
   const [full_payment, setFull_payment] = useState(false);
-  const [cart_id, setCart_id] = useState("");
+  const [cart_id, setCart_id] = useState(0);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const calculateMonth = (a, b) => {
@@ -72,14 +71,26 @@ const PaymentMethod = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const postResponse = await axios.post(`${BACKEND_URL}/Payment`, {
-        userEmail,
-        cart_id,
-        instalment_period,
-        cart_value,
-        monthlyAmount,
-        full_payment,
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://Proj3/api`,
+        scope: "read:current_user",
       });
+      const postResponse = await axios.post(
+        `${BACKEND_URL}/payment`,
+        {
+          userEmail,
+          cart_id,
+          instalment_period,
+          cart_value,
+          monthlyAmount,
+          full_payment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       console.log(postResponse);
     } catch (error) {
       console.log(error);
@@ -92,6 +103,7 @@ const PaymentMethod = () => {
       scope: "read:current_user",
     });
     const email = user.email;
+    console.log(email);
     const transaction = await axios.get(`${BACKEND_URL}/User/${email}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -99,13 +111,14 @@ const PaymentMethod = () => {
     });
 
     const { data } = transaction;
-    const { UUID } = data;
-    setUserEmail(UUID);
+    //console.log(data);
+    const { user_id } = data;
+    setUserEmail(user_id);
   };
 
-  useEffect(() => {
+  if (user !== undefined) {
     getuserInfo();
-  }, []);
+  }
 
   /*   async function getCartId() {
     const accessToken = await getAccessTokenSilently({
@@ -127,37 +140,42 @@ const PaymentMethod = () => {
 
   return (
     <div className="Paymentbox">
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
-          <Box sx={{ maxWidth: 300 }}>
-            <Box>
+          <Box sx={{ pl: 5 }}>
+            <Box sx={{ pt: 4, pb: 2 }}>
               <TextField
+                style={{ width: 240, color: "purple" }}
                 id="outlined-read-only-input"
-                label="UserEmail"
-                defaultValue={userEmail}
+                label="User"
+                variant="filled"
+                value={userEmail}
                 InputProps={{
                   readOnly: true,
                 }}
               />
             </Box>
-            <Box>
+            <Box sx={{ pb: 2 }}>
               <TextField
+                style={{ width: 240 }}
                 id="outlined-read-only-input"
-                label="Total Amount"
-                defaultValue={cart_value}
+                label="Cart Amount"
+                variant="filled"
+                value={cart_value}
                 InputProps={{
                   readOnly: true,
                 }}
               />
             </Box>
-            <Box sx={{ Width: 200 }}>
-              <FormControl>
+            <Box sx={{ pb: 2 }}>
+              <FormControl style={{ width: 240 }}>
                 <InputLabel id="demo-simple-select-label">
                   Installment Period
                 </InputLabel>
                 <Select
                   labelId="Instalment Period"
                   id="Period"
+                  variant="filled"
                   value={instalment_period}
                   label="Instalment Period"
                   onChange={handleChange}
@@ -177,23 +195,30 @@ const PaymentMethod = () => {
                 </Select>
               </FormControl>
             </Box>
-            <Box>
+            <Box sx={{ pb: 2 }}>
               <TextField
+                style={{ width: 240 }}
                 id="outlined-read-only-input"
                 label="Monthly Payment"
-                defaultValue={monthlyAmount}
+                variant="filled"
+                value={monthlyAmount}
                 InputProps={{
                   readOnly: true,
                 }}
               />
             </Box>
           </Box>
-        </div>
-        <br />
-        <br />
-        <div>
-          <Box sx={{ mx: 23 }}>
-            <Button style={{ width: 100 }} variant="contained">
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ pb: 2 }}
+          >
+            <Button
+              style={{ width: 100 }}
+              variant="contained"
+              onClick={handleSubmit}
+            >
               Pay now
             </Button>
           </Box>
