@@ -16,13 +16,14 @@ import divider from "./images/NavBar Divider.svg";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const PaymentMethod = () => {
-  const [cart_value, setCartValue] = useState(0);
+  const [cart_value, setCartValue] = useState(0.0);
   const [instalment_period, setInstalmentPeriod] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0.0);
   const [userEmail, setUserEmail] = useState("");
   const [full_payment, setFull_payment] = useState(false);
   const [cart_id, setCart_id] = useState(0);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [userCartItems, setUserCartItems] = useState();
 
   const calculateMonth = (a, b) => {
     let monthPay = a / b;
@@ -32,6 +33,41 @@ const PaymentMethod = () => {
   const handleChange = (event) => {
     setInstalmentPeriod(event.target.value);
   };
+
+  useEffect(() => {
+    if (userCartItems !== undefined) {
+      var newsum = 0.0;
+      var cart_id = 0;
+      userCartItems.forEach((item) => {
+        console.log(item);
+        const { itemPrice, cartID } = item;
+        cart_id = cartID;
+        newsum += parseInt(itemPrice);
+      });
+      setCart_id(cart_id);
+      setCartValue(newsum);
+    }
+  }, [userCartItems]);
+
+  async function getListings() {
+    if (user !== undefined) {
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://Proj3/api`,
+        scope: "read:current_user",
+      });
+      const buyerID = user.email;
+      const { data } = await axios.get(`${BACKEND_URL}/Add2Cart/${buyerID}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      await setUserCartItems(data);
+    }
+  }
+
+  useEffect(() => {
+    getListings();
+  }, []);
 
   /* const monthlyPayment = useCallback(
     (a) => {
