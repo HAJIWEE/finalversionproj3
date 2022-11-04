@@ -15,7 +15,6 @@ module.exports = {
       },
       itemId: {
         type: Sequelize.INTEGER,
-        references: { model: "listings", key: "id" },
       },
       itemName: {
         type: Sequelize.STRING,
@@ -25,11 +24,9 @@ module.exports = {
       },
       sellerUserName: {
         type: Sequelize.STRING,
-        references: { model: "Users", key: "user_id" },
       },
       buyerUserName: {
         type: Sequelize.STRING,
-        references: { model: "Users", key: "user_id" },
       },
       createdAt: {
         allowNull: false,

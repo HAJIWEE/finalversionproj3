@@ -40,7 +40,7 @@ class cartController extends BaseController {
       }
       const reqItem = await this.model.create({
         cartID: CurrcartID,
-        itemIc: id,
+        itemId: id,
         itemName: itemName,
         itemPrice: itemPrice,
         sellerUserName: sellerUserID,
