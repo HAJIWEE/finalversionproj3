@@ -15,7 +15,7 @@ class PaymentController extends BaseController {
       monthly_amount,
     } = req.body;
     console.log(req.body);
-    console.log(cart_value);
+    console.log(cart_value);cd 
     console.log(cart_id);
     console.log(monthly_amount);
     try {
