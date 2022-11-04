@@ -86,24 +86,26 @@ const PaymentMethod = () => {
     }
   };
 
-  /*   if (isAuthenticated) {
-    async function getuserInfo() {
-      const accessToken = await getAccessTokenSilently({
-        audience: `https://Proj3/api`,
-        scope: "read:current_user",
-      });
-      const transaction = await axios.get(`${BACKEND_URL}/User/${user.email}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  const getuserInfo = async () => {
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://Proj3/api`,
+      scope: "read:current_user",
+    });
+    const email = user.email;
+    const transaction = await axios.get(`${BACKEND_URL}/User/${email}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-      const { data } = transaction;
-      const { UUID } = data;
-      setUserEmail(UUID);
-      console.log(userEmail);
-    }
-    getuserInfo(); */
+    const { data } = transaction;
+    const { UUID } = data;
+    setUserEmail(UUID);
+  };
+
+  useEffect(() => {
+    getuserInfo();
+  }, []);
 
   /*   async function getCartId() {
     const accessToken = await getAccessTokenSilently({

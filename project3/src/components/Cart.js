@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Cart = (props) => {
   return (
     <div>
-      <Link to="/cart/payment">
+      <Link to="/cart/paymentmethod">
         <Button variant="contained">Check out</Button>
       </Link>
     </div>

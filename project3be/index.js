@@ -46,7 +46,7 @@ const NavHistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon, checkJwt).routes();
 const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
-const PaymentRouter = new paymentRouter(paymentCon).routes();
+const PaymentRouter = new paymentRouter(paymentCon, checkJwt).routes();
 const CartRouter = new cartRouter(cartCon, checkJwt).routes();
 
 const PORT = process.env.PORT;

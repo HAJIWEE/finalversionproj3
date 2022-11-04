@@ -41,11 +41,11 @@ const App = () => {
             element={<TrackOrderStatus />}
           />
           <Route path="profile/orderhistory" element={<OrderHistory />} />
-          <Route path="profile/paymentmethod" element={<PaymentMethod />} />
+          {/*           <Route path="profile/paymentmethod" element={<PaymentMethod />} /> */}
           <Route path="search" element={<Search />} />
           <Route path="upload" element={<Upload />} />
           <Route path="cart" element={<Cart />} />
-          <Route path="cart/payment" element={<PaymentMethod />} />
+          <Route path="cart/paymentmethod" element={<PaymentMethod />} />
           <Route path="orders" element={<Orders />} />
           <Route path="sales" element={<Sales />} />
         </Route>
