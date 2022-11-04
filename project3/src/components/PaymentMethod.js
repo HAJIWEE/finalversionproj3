@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-// import { Outlet, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { BACKEND_URL } from "../constants";
 import "./cssfiles/Payment.css";
@@ -11,9 +11,12 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Row from "react-bootstrap/Row";
+import divider from "./images/NavBar Divider.svg";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const PaymentMethod = () => {
-  const [cart_value, setCartValue] = useState(100);
+  const [cart_value, setCartValue] = useState(0);
   const [instalment_period, setInstalmentPeriod] = useState(0);
   const [monthlyAmount, setMonthlyAmount] = useState(0.0);
   const [userEmail, setUserEmail] = useState("");
@@ -111,7 +114,7 @@ const PaymentMethod = () => {
     });
 
     const { data } = transaction;
-    //console.log(data);
+
     const { user_id } = data;
     setUserEmail(user_id);
   };
@@ -139,91 +142,112 @@ const PaymentMethod = () => {
   }, []); */
 
   return (
-    <div className="Paymentbox">
-      <form>
-        <div>
-          <Box sx={{ pl: 5 }}>
-            <Box sx={{ pt: 4, pb: 2 }}>
-              <TextField
-                style={{ width: 240, color: "purple" }}
-                id="outlined-read-only-input"
-                label="User"
-                variant="filled"
-                value={userEmail}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Box>
-            <Box sx={{ pb: 2 }}>
-              <TextField
-                style={{ width: 240 }}
-                id="outlined-read-only-input"
-                label="Cart Amount"
-                variant="filled"
-                value={cart_value}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Box>
-            <Box sx={{ pb: 2 }}>
-              <FormControl style={{ width: 240 }}>
-                <InputLabel id="demo-simple-select-label">
-                  Installment Period
-                </InputLabel>
-                <Select
-                  labelId="Instalment Period"
-                  id="Period"
+    <div>
+      <Box className="PaymentPage">
+        <Row className="paymentTitleBar">
+          <Link to="/cart">
+            <ChevronLeftIcon fontSize="large" color="success" />
+          </Link>
+          <label className="paymentTitle">Payment Method</label>
+        </Row>
+        <Row className="paymentDivider">
+          <img src={divider} alt="divider" />
+        </Row>
+        <form>
+          <div className="Paymentbox">
+            <label className="titleLabel">
+              What do you want to split your payment?
+            </label>
+            <Box sx={{ pl: 5 }}>
+              <Box sx={{ pt: 4, pb: 2 }}>
+                <TextField
+                  className="textField"
+                  style={{ width: 240, color: "purple" }}
+                  id="outlined-read-only-input"
+                  label="User"
                   variant="filled"
-                  value={instalment_period}
-                  label="Instalment Period"
-                  onChange={handleChange}
+                  value={userEmail}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Box>
+              <Box sx={{ pb: 2 }}>
+                <TextField
+                  className="textField"
+                  style={{ width: 240 }}
+                  id="outlined-read-only-input"
+                  label="Cart Amount"
+                  variant="filled"
+                  value={cart_value}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Box>
+              <Box sx={{ pb: 2 }}>
+                <FormControl
+                  style={{ width: 240 }}
+                  variant="filled"
+                  className="textField"
                 >
-                  <MenuItem value={0}>0</MenuItem>
-                  <MenuItem value={2}>2</MenuItem>
-                  <MenuItem value={3}>3</MenuItem>
-                  <MenuItem value={4}>4</MenuItem>
-                  <MenuItem value={5}>5</MenuItem>
-                  <MenuItem value={6}>6</MenuItem>
-                  <MenuItem value={7}>7</MenuItem>
-                  <MenuItem value={8}>8</MenuItem>
-                  <MenuItem value={9}>9</MenuItem>
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={11}>11</MenuItem>
-                  <MenuItem value={12}>12</MenuItem>
-                </Select>
-              </FormControl>
+                  <InputLabel id="demo-simple-select-filled-label">
+                    Installment Period
+                  </InputLabel>
+                  <Select
+                    labelId="Instalment Period"
+                    id="Period"
+                    variant="filled"
+                    value={instalment_period}
+                    label="Instalment Period"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value={0}>0</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={6}>6</MenuItem>
+                    <MenuItem value={7}>7</MenuItem>
+                    <MenuItem value={8}>8</MenuItem>
+                    <MenuItem value={9}>9</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={11}>11</MenuItem>
+                    <MenuItem value={12}>12</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ pb: 2 }}>
+                <TextField
+                  className="textField"
+                  style={{ width: 240 }}
+                  id="outlined-read-only-input"
+                  label="Monthly Payment"
+                  variant="filled"
+                  value={monthlyAmount}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Box>
             </Box>
-            <Box sx={{ pb: 2 }}>
-              <TextField
-                style={{ width: 240 }}
-                id="outlined-read-only-input"
-                label="Monthly Payment"
-                variant="filled"
-                value={monthlyAmount}
-                InputProps={{
-                  readOnly: true,
-                }}
-              />
-            </Box>
-          </Box>
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ pb: 2 }}
-          >
-            <Button
-              style={{ width: 100 }}
-              variant="contained"
-              onClick={handleSubmit}
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mt: 2 }}
             >
-              Pay now
-            </Button>
-          </Box>
-        </div>
-      </form>
+              <Button
+                style={{ width: 100 }}
+                variant="contained"
+                onClick={handleSubmit}
+              >
+                Pay now
+              </Button>
+            </Box>
+          </div>
+        </form>
+      </Box>
     </div>
   );
 };
