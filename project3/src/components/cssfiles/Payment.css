@@ -1,0 +1,18 @@
+body {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  padding: 0%;
+  background: #5a2762;
+  margin: 0%;
+}
+
+.Paymentbox {
+  margin: auto;
+  margin-top: 20px;
+  width: 319px;
+  height: 500px;
+
+  background: #e94c00;
+  border-radius: 35px;
+}

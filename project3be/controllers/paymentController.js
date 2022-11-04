@@ -12,64 +12,43 @@ class PaymentController extends BaseController {
       instalment_period,
       cart_value,
       full_payment,
-      monthly_amount,
+      monthlyAmount,
     } = req.body;
     console.log(req.body);
     console.log(cart_value);
     console.log(cart_id);
-    console.log(monthly_amount);
+    console.log(monthlyAmount);
     try {
-      if (i == 0) {
+      if (instalment_period == 0) {
         const newIOU = await this.model.create({
           userEmail: userEmail,
           cart_id: cart_id,
           cart_value: cart_value,
-          monthly_amount: monthly_amount,
+          monthly_amount: monthlyAmount,
           instalment_period: instalment_period,
           full_payment: true,
         });
         console.log(res);
-        return res.json(newIOU);
+        res.json(newIOU);
       } else {
         for (let i = instalment_period; i > 0; i--) {
-          newIOU = await this.model.create({
+          const newIOU = await this.model.create({
             userEmail: userEmail,
             cart_id: cart_id,
             cart_value: cart_value,
-            monthly_amount: monthly_amount,
+            monthly_amount: monthlyAmount,
             instalment_period: instalment_period,
-            full_payment: false,
-          });
-        }
-      }
-    } catch (err) {
-      return res.status(400).json({ error: true, msg: err });
-    }
-  }
-
-  /* for (let i = instalment_period; i > 0; i--) {
-        if (i != 0) {
-          const newIOU = await this.model.create({
-            userEmail: userEmail,
-            cart_id: cart,
-            cart_value: cart_value,
-            monthly_amount: monthly_amount,
-            instalment_period: i,
             full_payment: false,
           });
           console.log(res);
           return res.json(newIOU);
-        } else {
-          newIOU = await this.model.create({
-            user_id: userEmail,
-            cart_id: cart,
-            cart_value: cart_value,
-            monthly_amount: monthly_amount,
-            instalment_period: i,
-            full_payment: true,
-          });
         }
-      } */
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
 
   async getOne(req, res) {
     const id = req.params.cart_Id;
