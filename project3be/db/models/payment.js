@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   payment.init(
     {
       userEmail: DataTypes.STRING,
-      cart_id: DataTypes.INTEGER,
+      cart_id: DataTypes.STRING,
       cart_value: DataTypes.DOUBLE,
       instalment_period: DataTypes.INTEGER,
       monthly_amount: DataTypes.DOUBLE,

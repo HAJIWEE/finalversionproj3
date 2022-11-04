@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       cart_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         unique: true,
       },
       cart_value: {

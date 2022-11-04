@@ -15,6 +15,12 @@ class cartRouter {
       this.auth
     );
 
+    router.post(
+      "/clear",
+      this.controller.removeOne.bind(this.controller),
+      this.auth
+    );
+
     router.put("/", this.auth, this.controller.downOne.bind(this.controller)),
       router.post(
         "/",

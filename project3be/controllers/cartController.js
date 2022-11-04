@@ -84,16 +84,21 @@ class cartController extends BaseController {
       console.log(err);
       return res.status(400).json({ error: true, msg: err });
     }
-  } // Retrieve specific sighting
-  // async getOne(req, res) {
-  //   const { sightingId } = req.params;
-  //   try {
-  //     const sighting = await this.model.findByPk(sightingId);
-  //     return res.json(sighting);
-  //   } catch (err) {
-  //     return res.status(400).json({ error: true, msg: err });
-  //   }
-  // }
+  }
+
+  async removeOne(req, res) {
+    try {
+      const { cart_id } = req.body;
+      console.log(cart_id);
+      const reqItem = await this.model.destroy({
+        where: { cartID: cart_id },
+      });
+      return res.json(reqItem);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: true, msg: err });
+    }
+  }
 }
 
 module.exports = cartController;
