@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       monthly_amount: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE,
       },
       full_payment: {
         type: Sequelize.BOOLEAN,

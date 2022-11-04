@@ -54,11 +54,11 @@ const PaymentMethod = () => {
 
   useEffect(() => {
     if (instalment_period !== 0) {
-      setMonthlyAmount(calculateMonth(cart_value, instalment_period + 1));
+      setMonthlyAmount(calculateMonth(cart_value, instalment_period));
     } else {
       return setMonthlyAmount(cart_value);
     }
-  }, [instalment_period, cart_value]);
+  }, [instalment_period]);
 
   console.log(instalment_period);
   console.log(monthlyAmount);
@@ -124,7 +124,7 @@ const PaymentMethod = () => {
   }, []); */
 
   return (
-    <div>
+    <div className="Paymentbox">
       <form onSubmit={handleSubmit}>
         <div>
           <Box sx={{ maxWidth: 300 }}>
@@ -161,7 +161,6 @@ const PaymentMethod = () => {
                   onChange={handleChange}
                 >
                   <MenuItem value={0}>0</MenuItem>
-                  <MenuItem value={1}>1</MenuItem>
                   <MenuItem value={2}>2</MenuItem>
                   <MenuItem value={3}>3</MenuItem>
                   <MenuItem value={4}>4</MenuItem>

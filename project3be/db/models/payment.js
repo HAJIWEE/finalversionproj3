@@ -13,15 +13,16 @@ module.exports = (sequelize, DataTypes) => {
   }
   payment.init(
     {
-      user_id: DataTypes.STRING,
+      userEmail: DataTypes.STRING,
       cart_id: DataTypes.INTEGER,
       cart_value: DataTypes.INTEGER,
       instalment_period: DataTypes.INTEGER,
+      monthly_amount: DataTypes.DOUBLE,
       full_payment: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: "payment",
+      modelName: "payments",
     }
   );
   return payment;

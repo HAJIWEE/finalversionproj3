@@ -17,7 +17,7 @@ const cartController = require("./controllers/cartController");
 // importing DB
 const db = require("./db/models/index");
 const { literal } = require("sequelize");
-const { navhist, Users, listing, cart, payment } = db;
+const { navhist, Users, listing, cart, payments } = db;
 
 const config = {
   authRequired: false,
@@ -39,9 +39,9 @@ const checkJwt = auth({
 const navHistoryCon = new navhistoryController(navhist);
 const userCon = new userController(Users);
 const listingCon = new listingController(listing);
-const paymentCon = new paymentController(payment);
+const paymentCon = new paymentController(payments);
 const cartCon = new cartController(cart);
-// inittializing Routers
+// inittializing Routerså
 const NavHistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon, checkJwt).routes();
