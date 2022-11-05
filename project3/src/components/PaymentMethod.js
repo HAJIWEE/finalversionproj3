@@ -22,7 +22,7 @@ const PaymentMethod = () => {
   const [userEmail, setUserEmail] = useState("");
   const [full_payment, setFull_payment] = useState(false);
   const [cart_id, setCart_id] = useState(0);
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [userCartItems, setUserCartItems] = useState();
   const [redirect, setRedirectState] = useState(false);
 
@@ -40,7 +40,6 @@ const PaymentMethod = () => {
       var newsum = 0.0;
       var cart_id = 0;
       userCartItems.forEach((item) => {
-        console.log(item);
         const { itemPrice, cartID } = item;
         cart_id = cartID;
         newsum += parseFloat(itemPrice);
@@ -99,9 +98,6 @@ const PaymentMethod = () => {
     }
   }, [instalment_period]);
 
-  console.log(instalment_period);
-  console.log(monthlyAmount);
-
   /*  useEffect(() => {
     const monthlyFinal = monthlyPayment(instalment_period);
     setMonthlyAmount(monthlyFinal.toFixed(2));
@@ -147,9 +143,7 @@ const PaymentMethod = () => {
               setRedirectState(true);
             });
         });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const getuserInfo = async () => {
@@ -158,7 +152,6 @@ const PaymentMethod = () => {
       scope: "read:current_user",
     });
     const email = user.email;
-    console.log(email);
     const transaction = await axios.get(`${BACKEND_URL}/User/${email}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,

@@ -5,7 +5,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 import { Nav } from "./components/NavBar";
 import { AllOrders } from "./components/AllOrders.js";
-import { Cart } from "./components/Cart.js";
+import Cart from "./components/Cart.js";
 import { LikedProducts } from "./components/LikedProducts.js";
 import { Create } from "./components/CreateUseraccount.js";
 import { Newsfeed } from "./components/Newsfeed";
@@ -14,7 +14,7 @@ import { PaymentMethod } from "./components/PaymentMethod.js";
 import { Profile } from "./components/Profile.js";
 import { Search } from "./components/Search.js";
 import { TrackOrderStatus } from "./components/TrackOrderStatus.js";
-import { Upload } from "./components/Upload.js";
+import Upload from "./components/Upload.js";
 import { UploadPicture } from "./components/uploadpicture.js";
 import { Orders } from "./components/Orders";
 import { Sales } from "./components/Sales";
@@ -41,7 +41,6 @@ const App = () => {
             element={<TrackOrderStatus />}
           />
           <Route path="profile/orderhistory" element={<OrderHistory />} />
-          {/*           <Route path="profile/paymentmethod" element={<PaymentMethod />} /> */}
           <Route path="search" element={<Search />} />
           <Route path="upload" element={<Upload />} />
           <Route path="cart" element={<Cart />} />

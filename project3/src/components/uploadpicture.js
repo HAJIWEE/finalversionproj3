@@ -59,7 +59,6 @@ const UploadPicture = (props) => {
         }
       )
       .then(() => {
-        console.log(imageUrl);
         Navigate({ to: "/profile", replace: true });
       })
       .catch((err) => {

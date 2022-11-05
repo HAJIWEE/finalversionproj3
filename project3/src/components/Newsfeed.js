@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./cssfiles/Newsfeed.css";
-import sample from "./images/Gendou card.png";
 import { Outlet, Link } from "react-router-dom";
 import FaceIcon from "@mui/icons-material/Face";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { color } from "@mui/system";
-import { green } from "@mui/material/colors";
 
 import { BACKEND_URL } from "../constants";
 
@@ -18,16 +15,7 @@ const Newsfeed = (props) => {
   const [userName, setCurrUser] = useState("");
 
   async function getListings() {
-    const accessToken = await getAccessTokenSilently({
-      audience: `https://Proj3/api`,
-      scope: "read:current_user",
-    });
-    const { data } = await axios.get(`${BACKEND_URL}/list`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    console.log(data);
+    const { data } = await axios.get(`${BACKEND_URL}/list`);
     await setNewsfeedItems(data);
   }
 
@@ -43,7 +31,6 @@ const Newsfeed = (props) => {
       scope: "read:current_user",
     });
     const buyerUserID = user.email;
-    console.log({ id, itemName, itemPrice, sellerUserID, buyerUserID });
     const res = await axios.post(
       `${BACKEND_URL}/Add2Cart`,
       { id, itemName, itemPrice, sellerUserID, buyerUserID },
@@ -53,7 +40,6 @@ const Newsfeed = (props) => {
         },
       }
     );
-    console.log(res);
   };
 
   //   //   // newsfeed rendering function
@@ -70,7 +56,7 @@ const Newsfeed = (props) => {
         } = item;
 
         return (
-          <div>
+          <div key={item.key}>
             <ul className="InstaCard">
               <li>
                 <ul className="ItemTitleBanner">
@@ -93,12 +79,16 @@ const Newsfeed = (props) => {
               <li>
                 <ul className="pricetable">
                   <li>
-                    <button
-                      className="CartAdd"
-                      onClick={(event) => handleAddToCart(item, event)}
-                    >
-                      Add to cart
-                    </button>
+                    {user !== undefined ? (
+                      <button
+                        className="CartAdd"
+                        onClick={(event) => handleAddToCart(item, event)}
+                      >
+                        Add to cart
+                      </button>
+                    ) : (
+                      <div></div>
+                    )}
                   </li>
                   <li style={{ marginRight: 170, color: "lime" }}>
                     $${itemPrice}

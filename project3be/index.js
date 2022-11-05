@@ -24,7 +24,7 @@ const config = {
   auth0Logout: true,
   secret: process.env.AUTH_SECRET,
   baseURL: "http://localhost:5000",
-  clientID: "ZPkrGIviMJ9K5vMoNIQns7F5hG6pwZFE",
+  clientID: process.env.CLIENT_ID,
   issuerBaseURL: "https://dev-oa1xn--2.us.auth0.com",
 };
 
@@ -45,7 +45,7 @@ const cartCon = new cartController(cart);
 const NavHistoryRouter = new navHistoryRouter(navHistoryCon, checkJwt).routes();
 const ImageRouter = new imageRouter(checkJwt).routes();
 const UserRouter = new userRouter(userCon, checkJwt).routes();
-const ListingRouter = new listingRouter(listingCon, checkJwt).routes();
+const ListingRouter = new listingRouter(listingCon).routes();
 const PaymentRouter = new paymentRouter(paymentCon, checkJwt).routes();
 const CartRouter = new cartRouter(cartCon, checkJwt).routes();
 

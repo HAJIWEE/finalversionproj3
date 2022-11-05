@@ -8,16 +8,11 @@ const crypto = require("crypto");
 const util = require("util");
 const randomBytes = util.promisify(crypto.randomBytes);
 
-const region = "ap-southeast-1";
-const bucketName = "imagesbucketp3rocket";
-const accessKeyId = "AKIASDMQVHSXT2ZO2IBR";
-const secretAccessKey = "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";
-
 const s3Client = new S3Client({
-  region: region,
+  region: process.env.S3_REGION,
   credentials: {
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey,
+    accessKeyId: process.env.S3_ACCESSKEYID,
+    secretAccessKey: process.env.S3_SECRETACCESSKEY,
   },
 });
 
@@ -33,7 +28,7 @@ class imageRouter {
       const imageName = rawBytes.toString("hex");
 
       const params = {
-        Bucket: bucketName, // The name of the bucket. For example, 'sample_bucket_101'.
+        Bucket: process.env.S3_BUCKETNAME, // The name of the bucket. For example, 'sample_bucket_101'.
         Key: imageName, // The name of the object. For example, 'sample_upload.txt'.
         Body: req.file.buffer, // The content of the object. For example, 'Hello world!".
       };

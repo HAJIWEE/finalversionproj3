@@ -11,7 +11,7 @@ import Row from "react-bootstrap/Row";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 import { BACKEND_URL } from "../constants";
 import { Nav } from "react-bootstrap";
 
@@ -41,7 +41,6 @@ const Upload = (props) => {
 
     const { data } = transaction;
     const { dpurl, username } = data;
-    console.log(dpurl);
     seturl(dpurl);
     setusername(username);
   }
@@ -60,7 +59,6 @@ const Upload = (props) => {
       scope: "read:current_user",
     });
     if (imageUpload != null) {
-      console.log(imageUpload);
       const formData = new FormData();
       formData.append("file", imageUpload[0]);
       const { data } = await axios.post(
@@ -204,5 +202,7 @@ const Upload = (props) => {
     </div>
   );
 };
-
-export { Upload };
+export default withAuthenticationRequired(Upload, {
+  // Show a message while the user waits to be redirected to the login page.
+  onRedirecting: () => <div>Redirecting you to the login page...</div>,
+});

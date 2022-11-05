@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-
+import { withAuthenticationRequired } from "@auth0/auth0-react";
 import "./cssfiles/Cart.css";
 //***imports from images folder***
 import divider from "./images/NavBar Divider.svg";
@@ -25,9 +25,7 @@ const Cart = (props) => {
     if (userCartItems !== undefined) {
       var newsum = 0.0;
       userCartItems.forEach((item) => {
-        console.log(item);
         const { itemPrice } = item;
-        console.log(itemPrice);
         newsum += parseInt(itemPrice);
       });
       setTotalSum(newsum);
@@ -66,10 +64,9 @@ const Cart = (props) => {
   const renderCard = () => {
     if (userCartItems !== undefined) {
       const card = userCartItems.map((item) => {
-        const { cartID, itemName, itemPrice, sellerUserName, buyerUserName } =
-          item;
+        const { itemName, itemPrice, sellerUserName } = item;
         return (
-          <Card className="cardBox" key={itemName}>
+          <Card className="cardBox" key={item.key}>
             <Card.Body>
               <Card.Title style={{ margin: 10 }}>{itemName}</Card.Title>
               <Card.Subtitle style={{ margin: 10 }}>${itemPrice}</Card.Subtitle>
@@ -124,7 +121,10 @@ const Cart = (props) => {
   );
 };
 
-export { Cart };
+export default withAuthenticationRequired(Cart, {
+  // Show a message while the user waits to be redirected to the login page.
+  onRedirecting: () => <div>Redirecting you to the login page...</div>,
+});
 
 // // what to display in cart?
 // // - Items added by user with intention to buy (Display as Card objects)

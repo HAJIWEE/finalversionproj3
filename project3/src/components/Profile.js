@@ -43,7 +43,6 @@ const Profile = (props) => {
 
       const { data } = transaction;
       const { dpurl, username } = data;
-      console.log(dpurl);
       seturl(dpurl);
       setusername(username);
     }

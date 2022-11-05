@@ -11,7 +11,6 @@ class userController extends BaseController {
     const { username, imageUrl, userEmail, Role } = req.body;
     try {
       // Create new userSEQUE
-      console.log("hi");
       const newUser = await this.model.create({
         user_id: userEmail,
         username: username,
@@ -21,7 +20,6 @@ class userController extends BaseController {
       // Respond with new user
       return res.json(newUser);
     } catch (err) {
-      console.log(err);
       return res.status(400).json({ error: true, msg: err });
     }
   }
@@ -29,7 +27,6 @@ class userController extends BaseController {
   async getOne(req, res) {
     try {
       const { UUID } = req.params;
-      console.log(req.params);
       const CurrUser = await this.model.findOne({
         where: { user_id: UUID },
       });
@@ -55,7 +52,6 @@ class userController extends BaseController {
       // Respond with new sighting
       return res.json(newUser);
     } catch (err) {
-      console.log(err);
       return res.status(400).json({ error: true, msg: err });
     }
   }

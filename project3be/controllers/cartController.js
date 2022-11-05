@@ -29,14 +29,12 @@ class cartController extends BaseController {
         .then((res) => {
           const { cartID } = res;
           CurrcartID = cartID;
-          console.log("here");
         })
         .catch(() => {
           createCARTID = true;
         });
       if (createCARTID) {
         CurrcartID = await createCartID();
-        console.log(CurrcartID);
       }
       const reqItem = await this.model.create({
         cartID: CurrcartID,

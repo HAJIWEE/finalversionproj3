@@ -40,7 +40,6 @@ const Create = (props) => {
         .then((res) => {
           const { data } = res;
           const { dpurl } = data;
-          console.log(dpurl);
           if (data !== null) {
             setUserExisting(true);
           } else {
@@ -77,7 +76,6 @@ const Create = (props) => {
   }
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(BACKEND_URL);
     const accessToken = await getAccessTokenSilently({
       audience: `https://Proj3/api`,
       scope: "read:current_user",
@@ -94,7 +92,6 @@ const Create = (props) => {
         }
       )
       .then(() => {
-        console.log(imageUrl);
         setUserExisting(true);
       })
       .catch((err) => {});

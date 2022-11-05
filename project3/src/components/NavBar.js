@@ -26,25 +26,18 @@ export function Nav(props) {
     setValue(newValue);
     const timenow = new Date().toLocaleDateString();
     var value = newValue.toString();
-    await axios
-      .post(
-        `${BACKEND_URL}/navhistory`,
-        {
-          timenow,
-          value,
+    await axios.post(
+      `${BACKEND_URL}/navhistory`,
+      {
+        timenow,
+        value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+      }
+    );
   };
 
   return (
